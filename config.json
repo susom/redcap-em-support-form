@@ -1,0 +1,52 @@
+{
+  "name": "Support Form",
+
+  "namespace":"Stanford\\SupportForm",
+
+  "description": "A custom support form",
+
+  "versions": [
+    {
+      "0.1": "Initial Development Version on EMs"
+    }
+  ],
+
+  "compatibility": {
+    "redcap-version-min": "8.0.3"
+  },
+
+  "authors": [
+    {
+      "name": "Andy Martin",
+      "email": "andy123@stanford.edu",
+      "institution": "Stanford University"
+    }
+  ],
+
+  "permissions": [
+    "redcap_every_page_top"
+  ],
+
+  "links": {
+    "control-center": [
+    ],
+    "project": [
+      {
+        "name": "Support Form Test",
+        "icon": "gear",
+        "url": "test.php"
+      }
+    ]
+  },
+
+  "system-settings": [
+    {
+      "key": "support-log-file",
+      "name": "<b>A System-Wide Log File:</b> <i>(optional)</i><br>Provide a valid file path and the EM will debug information to this file",
+      "type": "text"
+    }
+  ],
+
+  "project-settings": [
+  ]
+}
