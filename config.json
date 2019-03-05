@@ -44,6 +44,10 @@
     ]
   },
 
+  "no-auth-pages": [
+    "test"
+  ],
+
   "system-settings": [
     {
       "key": "enable-system-debug-logging",
