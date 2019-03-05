@@ -1,0 +1,72 @@
+.redcap {
+    background: #333;
+    width: 530px;
+}
+.mhealth {
+    background: #fcfbf6;
+    width: 530px;
+}
+.rcbutton {
+    width: 530px;
+}
+.ric-dasher {
+    width: 429px;
+}
+.background {
+    background-color: #f0f4f5;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    display: table;
+}
+
+.input-group-addon {
+    border-color: #c7d1c5;
+    background-color: #e8ebec;
+}
+.btn-stanford, .btn-stanford:hover {
+    background-color: #8c1515;
+    border-color: #333;
+    color: #ffffff;
+}
+.panel > .panel-heading {
+    font-family: 'Fjord One', serif;
+    background-color: #8c1515;
+    color: #ffffff;
+    font-size: larger;
+}
+
+.black-accent {
+    background-color: #333333;
+    width: 100%;
+    height: 34px;
+}
+.brand {
+    position: relative;
+    display: block;
+    height: 73px;
+    margin: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+div.panel-body.hero {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.hero {
+    height: 60px;
+    font-family: 'Fjord One', serif;
+    color: #222222;
+    margin-top: 0;
+    background-color: #f0f4f5;
+
+}
+body, html {
+    height: 100%;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: medium;
+}
+.stanford {
+    color: darkred;
+}
