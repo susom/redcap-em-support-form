@@ -100,7 +100,7 @@ if ($first_time_ever) {
                 <div class="col-md-5" >
                     <p>&nbsp;</p>
                     <a href="https://stanford.service-now.com/it_services?id=sc_cat_item&sys_id=97bb9c8c134d9740d3b6b3b12244b0fb"   ><img src="<?php print $module->getUrl("img/dasher2.png",false,true) ?>" height="179"></a>
-                    <br/><a class="stanford" href="https://stanford.service-now.com/it_services?id=sc_cat_item&sys_id=97bb9c8c134d9740d3b6b3b12244b0fb    "><button type="button"  class="stanford ric-dasher" >For all other matters,<br/>request a DASHER Consultation </button></a></p>
+                    <br/><a class="stanford" href="https://stanford.service-now.com/it_services?id=sc_cat_item&sys_id=97bb9c8c134d9740d3b6b3b12244b0fb    "><button type="button"  class="stanford ric-dasher" >For all other research informatics matters,<br/>request a DASHER Consultation </button></a></p>
                 </div>
 
             </div>

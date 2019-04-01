@@ -63,8 +63,6 @@ if ($serviceProjectRecordId === '0') {
         'requestor_is_pi' => $iAmPI,
         'pi' => $pi,
         'irb_number' => $irb_number,
-        'cancer_data' => $cancerData,
-        'sci_member' => $sciMember,
         'project_title' => $projectTitle,
         'research_description' => $description,
         'requestor_name' => $requestorName,
@@ -80,7 +78,7 @@ if ($serviceProjectRecordId === '0') {
 
     $data_json = json_encode(array($data));
     $utils->logIt('1 data_json is '. $data_json );
-    $result = REDCap::saveData($service_metrics_pid, 'json', $data_json, 'overwrite');
+    $result = REDCap::saveData( 'json', $data_json, 'overwrite');
     $utils->logIt('1 result is '.print_r($result, true));
 } else {
     $newCase = false;
@@ -170,7 +168,6 @@ if ( $newCase ) {
         "\nResearch?: " . $researchstr .
         (!isset($irb_number) || strlen($irb_number) == 0 ? '' : ', IRB: ' . $irb_number) .
         (!isset($pi) || strlen($pi) == 0 ? '' : ', PI: ' . $pi) .
-        (!isset($sciMember) || strlen($sciMember) == 0 ? '' : ', SCI member: ' . $sciMember) .
         "\nArea of inquiry: $Primary_Category__c $redcapURL" .
         "\nPlans to publish: " . $pubplanstr .
         "\nFunding: " . $fundingstr .
@@ -218,10 +215,6 @@ if ( $newCase ) {
         'CustomOrigin__c' => $CustomOrigin__c,
         'Primary_Category__c' => $Primary_Category__c
     ];
-    if (isset($sciMember) && strlen($sciMember) > 0) {
-        $caseAr['SCI_Sponsor__c'] = $sciMember;
-        $caseAr['CancerCenter__c'] = 'true';
-    }
     $emailmessage = json_encode($contactObj) . "~#~#~" . json_encode((object)$caseAr);
     $utils->logIt($emailmessage);
     $send_contact=mail( $toAddr, "base64_encoded", base64_encode($emailmessage), $headers );

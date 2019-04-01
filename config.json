@@ -37,15 +37,15 @@
     ],
     "project": [
       {
-        "name": "Support Form Test",
+        "name": "Support Form",
         "icon": "gear",
-        "url": "test.php"
+        "url": "help.php"
       }
     ]
   },
 
   "no-auth-pages": [
-    "test"
+    "help"
   ],
 
   "system-settings": [
