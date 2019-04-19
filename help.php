@@ -175,6 +175,7 @@ if ($first_time_ever) {
                             <div class=" form-group input-group">
                                 <label class="input-group-addon" id="curatedDepartment_label">Department</label>
                                 <select class="form-control" id="curatedDepartment"  name="curated_department" aria-describedby="curatedDepartment_label" >
+                                    <option value=""></option>
                                     <option value="1">Anesthesiology, Perioperative & Pain Medicine</option>
                                     <option value="2">Biochemistry</option>
                                     <option value="3">Bioengineering</option>
