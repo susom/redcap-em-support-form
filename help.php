@@ -79,12 +79,12 @@ if ($first_time_ever) {
             <div class="panel" id="buttonbar">
                 <div class="col-md-7">
                     <p>&nbsp;</p>
-                    <button type="button" class="redcap" onclick="showRc()"><img src="<?php print $module->getUrl("img/redcap.png",false,true) ?>" height="174"></button>
-                    <br/><button type="button"  class="rcbutton stanford" onclick="showRc()">Get help with REDCap</button></br>
+                    <button type="button" class="redcap" onclick="showRequestForm()"><img src="<?php print $module->getUrl("img/combined-brand.png",false,true) ?>" height="174"></button>
+                    <br/><button type="button"  class="rcbutton stanford" onclick="showRequestForm()">Get help with REDCap, CHOIR, Cohort Discovery and Chart Review</button></br>
 
                 </div>
 
-                <div class="col-md-5" >
+                <!--div class="col-md-5" >
                     <p>&nbsp;</p>
                     <a href="https://redcap.stanford.edu/plugins/gethelp/ric.php"   ><img src="<?php print $module->getUrl("img/ric3.jpg",false,true) ?>" height="179"></a>
                     <br/><a class="stanford" href="https://redcap.stanford.edu/plugins/gethelp/ric.php"><button type="button"   class="ric-dasher stanford" >Obtain clinical data for research purposes</button></a></p>
@@ -95,12 +95,12 @@ if ($first_time_ever) {
                     <p>&nbsp;</p>
                     <button type="button" class="mhealth" onclick="showStride()"><img src="<?php print $module->getUrl("img/cdh.png",false,true) ?>" height="174"></button>
                     <br/><button type="button"  class="stanford rcbutton" onclick="showStride()">Get help with STRIDE tools for cohort discovery and chart review</br>Deploy custom CHOIR, mHealth, and Learning Healthcare Systems</button></br>
-                </div>
+                </div-->
 
                 <div class="col-md-5" >
                     <p>&nbsp;</p>
                     <a href="https://stanford.service-now.com/it_services?id=sc_cat_item&sys_id=97bb9c8c134d9740d3b6b3b12244b0fb"   ><img src="<?php print $module->getUrl("img/dasher2.png",false,true) ?>" height="179"></a>
-                    <br/><a class="stanford" href="https://stanford.service-now.com/it_services?id=sc_cat_item&sys_id=97bb9c8c134d9740d3b6b3b12244b0fb    "><button type="button"  class="stanford ric-dasher" >For all other research informatics matters,<br/>request a DASHER Consultation </button></a></p>
+                    <br/><a class="stanford" href="https://stanford.service-now.com/it_services?id=sc_cat_item&sys_id=97bb9c8c134d9740d3b6b3b12244b0fb    "><button type="button"  class="stanford ric-dasher" >For all other matters request a DASHER Consultation </button></a></p>
                 </div>
 
             </div>
@@ -109,10 +109,10 @@ if ($first_time_ever) {
             <div  id="rit_block" >
 
                 <div class="panel-body hero">
-                    <div >
+                    <!--div >
                         <h3 id="rchelpbanner">Get help with REDCap</h3>
                         <h3 id="stridehelpbanner">Get help with CHOIR, Research Patient Cohort Discovery / Chart Review, or mHealth / LHS</h3>
-                    </div>
+                    </div-->
                 </div>
 
                 <div class="panel" id="new_project_panel" >
@@ -124,7 +124,7 @@ if ($first_time_ever) {
                         <input type="hidden" id="salesforceEmail" name="salesforceEmail" value="smemailservice@5zhh8b0l4ozccemsnb0xt67zehmxg2kdb73rz0ubzuyta4u7b.2c-hduuuag.cs59.apex.sandbox.salesforce.com">
                         <input type="hidden" id="org" name="org" value="Research IT">
                         <input type="hidden" id="CustomOrigin__c" name="CustomOrigin__c" value="RIT Form V1">
-                        <span class="help-block">Please tell us about the project that you are working on.</span>
+                        <!--span class="help-block">Please tell us about the project that you are working on.</span-->
                         <div class="col-md-6">
                             <div class="form-group input-group">
                                 <span class='input-group-addon' id='contact_label'>Project Main Contact Name</span>
@@ -270,8 +270,6 @@ if ($first_time_ever) {
 
                 <div class="panel"  >
                     <div class="panel-heading">Today's Request</div>
-                    <div class="panel-body">
-
                         <div class="col-sm-12">
                             <div class="form-group input-group">
 
@@ -290,7 +288,7 @@ if ($first_time_ever) {
 
                             </div>
                         </div>
-
+                    <div class="panel-body">
                         <!-- Textarea -->
                         <div class="col-sm-12">
                             <div class="form-group input-group">
@@ -307,7 +305,33 @@ if ($first_time_ever) {
                             </div>
                         </div>
 
-                        <div id='redcap_pid_block'>
+                        <div class="col-md-3 mb-3">
+                            <div class="form-group custom-control custom-checkbox mb-3">
+                                <input type="checkbox" class="custom-control-input" id="proj-type-redcap" onclick="showRc()">
+                                <span class="custom-control-label" for="proj-type-redcap">REDCap</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group custom-control custom-checkbox mb-3">
+                                <input type="checkbox" class="custom-control-input" id="proj-type-choir">
+                                <span class="custom-control-label" for="proj-type-choir">CHOIR</span>
+                            </div>
+                        </div>
+                        <!--span class="help-block">Please tell us about the project that you are working on.</span-->
+                        <div class="col-md-4">
+                            <div class="form-group custom-control custom-checkbox mb-3">
+                                <input type="checkbox" class="custom-control-input" id="proj-type-crcd">
+                                <span class="custom-control-label" for="proj-type-crcd">Cohort Discovery / Chart Review</span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group custom-control custom-checkbox mb-3">
+                                <input type="checkbox" class="custom-control-input" id="proj-type-other">
+                                <span class="custom-control-label" for="proj-type-other">Other</span>
+                            </div>
+                        </div>
+
+                        <div id='redcap_pid_block' class="hidden">
                             <div class="col-sm-6">
                                 <div class=" form-group input-group">
                                     <label class="input-group-addon" id="redcapPid_label">REDCap Project ID (PID)</label>
@@ -343,11 +367,16 @@ if ($first_time_ever) {
 
 <script>
 
-    function showRc() {
+    function showRequestForm() {
         $("#rit_block").removeClass('hidden');
         $("#buttonbar").addClass('hidden');
         $("#rchelpbanner").removeClass('hidden');
         $("#stridehelpbanner").addClass('hidden');
+
+    }
+
+    function showRc() {
+        $("#redcap_pid_block").removeClass('hidden');
 
     }
 
