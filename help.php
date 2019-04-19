@@ -153,16 +153,18 @@ if ($first_time_ever) {
                                 <span class="input-group-addon" id="iAppt_label">Main Contact Affiliation</span>
                                 <select id="iAppt" name="iAppt" class="form-control" aria-describedby="iAppt_label" >
                                     <option value=""></option>
-                                    <?php
-                                    $enums = $utils->parseDDEnum($dd_array['appointment']['select_choices_or_calculations']);
-                                    $sufaculty = strpos($ldapResult->{'suaffiliation'}, 'faculty') !== FALSE;
-
-                                    foreach ($enums as $k => $v) {
-                                        if ($k == 1) continue;
-                                        $selected = ($sufaculty && strpos($v, 'Medicine Faculty') !== FALSE ? 'selected' : '');
-                                        print("            <option value='$k' $selected>$v</option>");
-                                    }
-                                    ?>
+                                    <option value="1">Stanford Medicine Faculty</option>
+                                    <option value="101">Stanford Medicine Faculty - MCL</option>
+                                    <option value="102">Stanford Medicine Faculty - UTL</option>
+                                    <option value="103">Stanford Medicine Faculty - CE</option>
+                                    <option value="104">Stanford Medicine Faculty - Other</option>
+                                    <option value="2">Stanford Medicine Staff</option>
+                                    <option value="3">Stanford Medicine Grad Student / Post-Doc</option>
+                                    <option value="4">Stanford Medicine MD Candidate</option>
+                                    <option value="5">SHC/SCH Clinical</option>
+                                    <option value="7">SHC/SCH Administrative</option>
+                                    <option value="10">Other Stanford Faculty/Staff/Student</option>
+                                    <option value="11">Not Affiliated with Stanford</option>
                                 </select>
                             </div>
 
@@ -173,48 +175,57 @@ if ($first_time_ever) {
                             <div class=" form-group input-group">
                                 <label class="input-group-addon" id="curatedDepartment_label">Department</label>
                                 <select class="form-control" id="curatedDepartment"  name="curated_department" aria-describedby="curatedDepartment_label" >
-                                    <option value=""></option>
-                                    <?php
-                                    $enums = $utils->parseDDEnum($dd_array['curated_department']['select_choices_or_calculations']);
-                                    foreach ($enums as $k => $v) {
-                                        print("            <option value='$k'>$v</option>");
-                                    }
-                                    ?>
+                                    <option value="1">Anesthesiology, Perioperative & Pain Medicine</option>
+                                    <option value="2">Biochemistry</option>
+                                    <option value="3">Bioengineering</option>
+                                    <option value="4">Biomedical Data Sciences</option>
+                                    <option value="5">Cancer Institute</option>
+                                    <option value="6">Cardiothoracic Surgery</option>
+                                    <option value="7">Chemical & Systems Biology</option>
+                                    <option value="8">Comparative Medicine</option>
+                                    <option value="10">Dermatology</option>
+                                    <option value="11">Developmental Biology</option>
+                                    <option value="12">Emergency Medicine</option>
+                                    <option value="13">Genetics</option>
+                                    <option value="14">Health Research & Policy</option>
+                                    <option value="151">Medicine - BMT</option>
+                                    <option value="152">Medicine - BMIR</option>
+                                    <option value="153">Medicine - Cardiovascular</option>
+                                    <option value="155">Medicine - Endocrinology</option>
+                                    <option value="156">Medicine - Gastroenterology & Hepatology</option>
+                                    <option value="157">Medicine - Hematology</option>
+                                    <option value="158">Medicine - Hospice & Palliative Medicine</option>
+                                    <option value="159">Medicine - Hospital Medicine</option>
+                                    <option value="160">Medicine - Immunology & Rheumatology</option>
+                                    <option value="161">Medicine - Infectious Disease</option>
+                                    <option value="162">Medicine - Nephrology</option>
+                                    <option value="163">Medicine - Oncology</option>
+                                    <option value="164">Medicine - Primary Care & PHS</option>
+                                    <option value="165">Medicine - Pulmonary & Critical Care</option>
+                                    <option value="166">Medicine - SPRC</option>
+                                    <option value="16">Microbiology & Immunology</option>
+                                    <option value="17">Molecular and Cellular Physiology</option>
+                                    <option value="18">Neurobiology</option>
+                                    <option value="19">Neurology</option>
+                                    <option value="20">Neurosurgery</option>
+                                    <option value="21">Obstetrics & Gynecology</option>
+                                    <option value="22">Ophthalmology</option>
+                                    <option value="23">Orthopaedic Surgery</option>
+                                    <option value="24">Otolaryngology</option>
+                                    <option value="25">Pathology</option>
+                                    <option value="26">Pediatrics</option>
+                                    <option value="27">Psychiatry & Behavioral Sciences</option>
+                                    <option value="28">Radiation Oncology</option>
+                                    <option value="29">Radiology</option>
+                                    <option value="30">Structural Biology</option>
+                                    <option value="31">Surgery</option>
+                                    <option value="32">Urology</option>
+                                    <option value="98">Other - Stanford Medicine (Academic)</option>
+                                    <option value="97">Other - Stanford Medicine (Clinical)</option>
+                                    <option value="99">Not Affiliated with Stanford Medicine</option>
                                 </select>
                             </div>
                         </div>
-
-
-                        <!--div class="col-sm-6">
-                            <div class=" form-group input-group">
-                                <label class="input-group-addon" id="funding_label">Project Funding Status</label>
-                                <select class="form-control" id="funding"  name="funding" aria-describedby="funding_label" >
-                                    <option value=""></option>
-                                    <?php
-                        $enums = $utils->parseDDEnum($dd_array['funding']['select_choices_or_calculations']);
-                        foreach ($enums as $k => $v) {
-                            print("            <option value='$k'>$v</option>");
-                        }
-                        ?>
-                                </select>
-                            </div>
-                        </div-->
-
-                        <!--div class="col-sm-6">
-                            <div class=" form-group input-group">
-                                <label class="input-group-addon " id="pubplan_label">Do you plan to publish?</label>
-                                <select class="form-control" id="pubplan"  name="pubplan" aria-describedby="pubplan_label" >
-                                    <option value=""></option>
-                                    <?php
-                        $enums = $utils->parseDDEnum($dd_array['pubplan']['select_choices_or_calculations']);
-                        foreach ($enums as $k => $v) {
-                            print("            <option value='$k'>$v</option>");
-                        }
-                        ?>
-                                </select>
-                            </div>
-
-                        </div-->
 
                         <div class="col-sm-6">
                             <div class="form-group input-group" >
@@ -376,8 +387,11 @@ if ($first_time_ever) {
     }
 
     function showRc() {
-        $("#redcap_pid_block").removeClass('hidden');
-
+        if ($("#proj-type-redcap:checked").length > 0) {
+            $("#redcap_pid_block").removeClass('hidden');
+        } else {
+            $("#redcap_pid_block").addClass('hidden');
+        }
     }
 
     function showStride() {
