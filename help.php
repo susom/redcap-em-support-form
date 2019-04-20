@@ -9,7 +9,10 @@ $utils = new Stanford\SupportForm\GetHelpUtils($module);
 $dd_array = REDCap::getDataDictionary($p_id, 'array', FALSE, array('funding','curated_department','pubplan','research','hospital_affiliation','auspices','inquiry','appointment'));
 
 $sunetid = $_SERVER['REMOTE_USER'];
-$rc_inq = strpos($_GET['inquiry'],'REDCap') !== FALSE;
+$prj_type = $_GET['prj_type'];
+$rc_inq = $prj_type === 'redcap';
+$choir_inq = $prj_type === 'choir';
+$stride_inq = $prj_type === 'stride';
 $utils->logIt('rc_inq '.$rc_inq);
 // Do LDAP Lookup
 $ldap = file_get_contents('http://med.stanford.edu/webtools-dev/stanford_ldap/ldap_lookup.php?token=pXJ5xNwj1P&exact=true&only=name,displayname,mail,department,suaffiliation,ou,telephonenumber&userid='. $sunetid);
@@ -105,23 +108,22 @@ if ($first_time_ever) {
 
             </div>
 
-
             <div  id="rit_block" >
 
-                <div class="panel-body hero">
-                    <!--div >
+                <!--div class="panel-body hero">
+                    <div >
                         <h3 id="rchelpbanner">Get help with REDCap</h3>
                         <h3 id="stridehelpbanner">Get help with CHOIR, Research Patient Cohort Discovery / Chart Review, or mHealth / LHS</h3>
-                    </div-->
-                </div>
+                    </div>
+                </div-->
 
                 <div class="panel" id="new_project_panel" >
                     <div class="panel-heading">Research Project Description</div>
                     <div class="panel-body">
                         <input type="hidden" id="brand" name="brand" value="researchit.png">
                         <input type="hidden" id="brandurl" name="brandurl" value="http://med.stanford.edu/researchit.html">
-                        <input type="hidden" id="QueueName__c" name="QueueName__c" value="queuename=REDCap Queue;shortname=REDCap Help;longname=REDCap Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/index.php;email=smrcemailservice@5-2iq1bfdgo8az62c4gcjqrb2bnpx69mpfs3rdjuq8btrhpu5r34.2c-hduuuag.cs59.apex.sandbox.salesforce.com">
-                        <input type="hidden" id="salesforceEmail" name="salesforceEmail" value="smemailservice@5zhh8b0l4ozccemsnb0xt67zehmxg2kdb73rz0ubzuyta4u7b.2c-hduuuag.cs59.apex.sandbox.salesforce.com">
+                        <input type="hidden" id="QueueName__c" name="QueueName__c" >
+                        <input type="hidden" id="salesforceEmail" name="salesforceEmail" value="smrcemailservice@5-2iq1bfdgo8az62c4gcjqrb2bnpx69mpfs3rdjuq8btrhpu5r34.2c-hduuuag.cs59.apex.sandbox.salesforce.com">
                         <input type="hidden" id="org" name="org" value="Research IT">
                         <input type="hidden" id="CustomOrigin__c" name="CustomOrigin__c" value="RIT Form V1">
                         <!--span class="help-block">Please tell us about the project that you are working on.</span-->
@@ -139,14 +141,12 @@ if ($first_time_ever) {
                             </div>
                         </div>
 
-
                         <div class="col-sm-6">
                             <div class="form-group input-group">
                                 <span class="input-group-addon" id="phone_label">Main Contact Phone</span>
                                 <input id="contactPhone" name="contactPhone" type="text" class="form-control" value="<?php print $ldapResult->{'telephonenumber'} ?>" aria-describedby="phone_label" >
                             </div>
                         </div>
-
 
                         <div class="col-sm-6">
                             <div class="form-group input-group">
@@ -167,7 +167,6 @@ if ($first_time_ever) {
                                     <option value="11">Not Affiliated with Stanford</option>
                                 </select>
                             </div>
-
 
                         </div>
 
@@ -319,26 +318,26 @@ if ($first_time_ever) {
 
                         <div class="col-md-3 mb-3">
                             <div class="form-group custom-control custom-checkbox mb-3">
-                                <input type="checkbox" class="custom-control-input" id="proj-type-redcap" onclick="showRc()">
+                                <input type="checkbox" class="custom-control-input" id="proj-type-redcap" onclick="selectQueue()">
                                 <span class="custom-control-label" for="proj-type-redcap">REDCap</span>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group custom-control custom-checkbox mb-3">
-                                <input type="checkbox" class="custom-control-input" id="proj-type-choir">
+                                <input type="checkbox" class="custom-control-input" id="proj-type-choir" onclick="selectQueue()">
                                 <span class="custom-control-label" for="proj-type-choir">CHOIR</span>
                             </div>
                         </div>
                         <!--span class="help-block">Please tell us about the project that you are working on.</span-->
                         <div class="col-md-4">
                             <div class="form-group custom-control custom-checkbox mb-3">
-                                <input type="checkbox" class="custom-control-input" id="proj-type-crcd">
-                                <span class="custom-control-label" for="proj-type-crcd">Cohort Discovery / Chart Review</span>
+                                <input type="checkbox" class="custom-control-input" id="proj-type-stride" onclick="selectQueue()">
+                                <span class="custom-control-label" for="proj-type-stride">Cohort Discovery / Chart Review</span>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group custom-control custom-checkbox mb-3">
-                                <input type="checkbox" class="custom-control-input" id="proj-type-other">
+                                <input type="checkbox" class="custom-control-input" id="proj-type-other" onclick="selectQueue()">
                                 <span class="custom-control-label" for="proj-type-other">Other</span>
                             </div>
                         </div>
@@ -369,11 +368,8 @@ if ($first_time_ever) {
                         <div class="col-sm-12">&nbsp;</div>
                     </div>
                 </div>
-
-
             </div>
         </div>
-
     </form>
 </div>
 
@@ -384,25 +380,35 @@ if ($first_time_ever) {
         $("#buttonbar").addClass('hidden');
         $("#rchelpbanner").removeClass('hidden');
         $("#stridehelpbanner").addClass('hidden');
-
     }
 
-    function showRc() {
+    function selectQueue() {
         if ($("#proj-type-redcap:checked").length > 0) {
             $("#redcap_pid_block").removeClass('hidden');
+            $("#QueueName__c").val("queuename=REDCap Queue;shortname=REDCap Help;longname=REDCap Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/redcap-support.html;email=rit-support@stanford.edu");
+        } else if ($("#proj-type-choir:checked").length > 0) {
+            $("#redcap_pid_block").addClass('hidden');
+            $("#QueueName__c").val("queuename=Research IT Queue;shortname=RIT Help;longname=Research IT Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/choir-support.html;email=rit-support@stanford.edu");
+        } else if ($("#proj-type-stride:checked").length > 0) {
+            $("#redcap_pid_block").addClass('hidden');
+            $("#QueueName__c").val("queuename=Research IT Queue;shortname=RIT Help;longname=Research IT Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/stride-support.html;email=rit-support@stanford.edu");
         } else {
             $("#redcap_pid_block").addClass('hidden');
+            $("#QueueName__c").val("queuename=Research IT Queue;shortname=RIT Help;longname=Research IT Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit-support.html;email=rit-support@stanford.edu");
         }
     }
+    /*
+    QUEUE_REDCAP = 'queuename=REDCap Queue;shortname=REDCap Help;longname=REDCap Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/redcap.php;email=redcap-help@stanford.edu';
+    QUEUE_RESEARCH_IT = 'queuename=Research IT Queue;shortname=Research IT;longname=Research IT;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit.php;email=rit-support@stanford.edu';
+
+    * */
 
     function showStride() {
-
         $("#rit_block").removeClass('hidden');
         $("#buttonbar").addClass('hidden');
         $("#redcap_pid_block").addClass('hidden');
         $("#rchelpbanner").addClass('hidden');
         $("#stridehelpbanner").removeClass('hidden');
-
     }
 
     function checkRequired() {
@@ -434,10 +440,29 @@ if ($first_time_ever) {
             $("#projectTitle").prop('required',false);
         }
     }
-
-
+<?php if ($prj_type) { ?>
+    $("#rit_block").removeClass('hidden');
+    $("#buttonbar").addClass('hidden');
+    <?php if ($rc_inq) { ?>
+        $("#proj-type-redcap").prop('checked', true);
+    <?php } else { ?>
+        $("#proj-type-redcap").prop('checked', false);
+    <?php }  ?>
+    <?php if ($choir_inq) { ?>
+        $("#proj-type-choir").prop('checked', true);
+    <?php } else { ?>
+        $("#proj-type-choir").prop('checked', false);
+    <?php }  ?>
+    <?php if ($stride_inq) { ?>
+        $("#proj-type-stride").prop('checked', true);
+    <?php } else { ?>
+        $("#proj-type-stride").prop('checked', false);
+    <?php }  ?>
+    selectQueue();
+<?php } else { ?>
     $("#rit_block").addClass('hidden');
-
+    $("#buttonbar").removeClass('hidden');
+<?php }  ?>
 
     $('#research').on('change', function() {
         if ($("#research").val() === '1') {
@@ -453,6 +478,7 @@ if ($first_time_ever) {
             $("#irb_number").prop('required',false);
         }
     });
+
     $('#iAmPI').on('change', function() {
         if ($("#iAmPI").val() === '0') {
             $("#pi_block").removeClass('hidden');
@@ -470,8 +496,6 @@ if ($first_time_ever) {
         } else {
             $("#rit_block").removeClass('hidden');
         }
-
-
 
         checkRequired();
     });
