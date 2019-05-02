@@ -14,6 +14,5 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
     {
         parent::__construct();
 
-        $this->emDebug('hello');
     }
 }

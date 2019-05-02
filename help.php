@@ -357,6 +357,12 @@ if ($first_time_ever) {
                             </div>
                         </div>
 
+                        <div id='other_block' class="hidden">
+                            <div class="col-sm-6">
+                                <span class="help-block">View the <a href="https://med.stanford.edu/researchit/use-cases.html">other initiatives we support</a>.</span>
+                            </div>
+                        </div>
+
                         <!-- Button -->
                         <div class="col-sm-12">&nbsp;</div>
                         <div class="col-sm-12">
@@ -383,17 +389,20 @@ if ($first_time_ever) {
     }
 
     function selectQueue() {
+        $("#redcap_pid_block").addClass('hidden');
+        $("#other_block").addClass('hidden');
         if ($("#proj-type-redcap:checked").length > 0) {
             $("#redcap_pid_block").removeClass('hidden');
             $("#QueueName__c").val("queuename=REDCap Queue;shortname=REDCap Help;longname=REDCap Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/redcap-support.html;email=rit-support@stanford.edu");
-        } else if ($("#proj-type-choir:checked").length > 0) {
-            $("#redcap_pid_block").addClass('hidden');
+        }
+        if ($("#proj-type-choir:checked").length > 0) {
             $("#QueueName__c").val("queuename=Research IT Queue;shortname=RIT Help;longname=Research IT Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/choir-support.html;email=rit-support@stanford.edu");
-        } else if ($("#proj-type-stride:checked").length > 0) {
-            $("#redcap_pid_block").addClass('hidden');
+        }
+        if ($("#proj-type-stride:checked").length > 0) {
             $("#QueueName__c").val("queuename=Research IT Queue;shortname=RIT Help;longname=Research IT Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/stride-support.html;email=rit-support@stanford.edu");
-        } else {
-            $("#redcap_pid_block").addClass('hidden');
+        }
+        if ($("#proj-type-other:checked").length > 0) {
+            $("#other_block").removeClass('hidden');
             $("#QueueName__c").val("queuename=Research IT Queue;shortname=RIT Help;longname=Research IT Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit-support.html;email=rit-support@stanford.edu");
         }
     }
