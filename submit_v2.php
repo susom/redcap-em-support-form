@@ -1,13 +1,15 @@
 <?php
 /** @var \Stanford\SupportForm\SupportForm $module */
 
+use Stanford\SupportForm\GetHelpUtils;
+
 require_once ('src/GetHelpUtils.php');
 $utils = new Stanford\SupportForm\GetHelpUtils($module);
 
 // this next one-line magic incantation instantiates instance variables corresponding to the field names in the form
 @extract($_POST);
 //
-// $contact, $contactEmail, $contactPhone, $iAppt, $department, $funding, $research, $iAmPI, $pi, $irb
+// $contact, $contactEmail, $contactPhone, $iAppt, $department, $funding, $research, $iAmPI, $pi, $irb_number
 // $sunetid, $requestorName ,$requestorEmail , $requestorPhone, $requestorAffiliation, $requestorOu,
 // $projectTitle, $availability, $description , $salesforceEmail   are now set.
 // $serviceProjectRecordId will be > 0 if the user selected a prior project rather than creating a new one
@@ -22,7 +24,7 @@ if (strchr($contact, ',') > 0) {
     $lastname = array_pop($parts);
     $firstname = implode(" ", $parts);
 }
-$utils->logIt('contact is '. $irb_number);
+
 if (strlen($lastname) == 0) {
     $lastname=$contact;
 }
@@ -245,6 +247,7 @@ echo "<html><head><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/b
         <div class='my-brand-logo'></div>
     </div></a>
 <div class='container'>  <h2>Thank You</h2>";
+
 if($send_contact){
     echo "<p>Thanks for contacting $org";
     if ($contact !== $requestorName) {
@@ -260,4 +263,4 @@ else {
 }
 echo "</div></body></html>";
 $utils->logIt( "\tEmail from $contactEmail:".$message.  "\n");
-?>
+
