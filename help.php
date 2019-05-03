@@ -125,7 +125,7 @@ if ($first_time_ever) {
                         <input type="hidden" id="brand" name="brand" value="researchit.png">
                         <input type="hidden" id="brandurl" name="brandurl" value="http://med.stanford.edu/researchit.html">
 
-                        <input type="hidden" id="salesforceEmail" name="salesforceEmail" value="smrcemailservice@5-2iq1bfdgo8az62c4gcjqrb2bnpx69mpfs3rdjuq8btrhpu5r34.2c-hduuuag.cs59.apex.sandbox.salesforce.com">
+                        <input type="hidden" id="salesforceEmail" name="salesforceEmail" value="rit-support@stanford.edu">
                         <input type="hidden" id="org" name="org" value="Research IT">
                         <input type="hidden" id="CustomOrigin__c" name="CustomOrigin__c" value="Research-IT V1">
                         <!--span class="help-block">Please tell us about the project that you are working on.</span-->
