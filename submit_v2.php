@@ -8,6 +8,7 @@ $utils = new Stanford\SupportForm\GetHelpUtils($module);
 
 // this next one-line magic incantation instantiates instance variables corresponding to the field names in the form
 @extract($_POST);
+$utils->logIt(print_r($_POST, TRUE));
 //
 // $contact, $contactEmail, $contactPhone, $iAppt, $department, $funding, $research, $iAmPI, $pi, $irb_number
 // $sunetid, $requestorName ,$requestorEmail , $requestorPhone, $requestorAffiliation, $requestorOu,
@@ -35,6 +36,30 @@ if ($iAmPI === '1') {
 } else {
     $utils->logIt('leaving pi as '.$pi);
 }
+$separator = '';
+$category = '';
+$queue = 'queuename=Research IT Queue;shortname=Research IT;longname=Research IT;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit-support.html;email=rit-support@stanford.edu';
+if (isset($proj_type_redcap) && $proj_type_redcap === 'on') {
+    $utils->logIt('found redcap');
+    $category .= $separator . 'REDCap';
+    $separator = ', ';
+    $queue = 'queuename=REDCap Queue;shortname=REDCap Help;longname=REDCap Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/redcap-support.html;email=redcap-help@stanford.edu';
+}
+if (isset($proj_type_choir) && $proj_type_choir === 'on') {
+    $utils->logIt('found choir');
+    $category .=  $separator . 'CHOIR';
+    $separator = ', ';
+}
+if (isset($proj_type_stride) && $proj_type_stride === 'on') {
+    $utils->logIt('found stride');
+    $category .= $separator . 'STRIDE';
+    $separator = ', ';
+}
+if (isset($proj_type_other) && $proj_type_other === 'on') {
+    $utils->logIt('found other');
+    $category .= $separator . 'Other';
+    $separator = ', ';
+}
 
 // split the information into two sections. New projects need a record in Service Metrics
 // and all projects need a record in Service Case Log
@@ -44,10 +69,7 @@ if ($serviceProjectRecordId === '0') {
     $newCase = true;
 
     $utils->logIt('creating new record');
-    // no previous project was referenced so create a new project from the submitted form
-//    $serviceProjectRecordId = $utils->getNextId($service_metrics_pid);
-//    $serviceProjectRecordId = getNextId2($service_metrics_pid, $utils);
-    $serviceProjectRecordId = $utils->getNextId($service_metrics_pid);
+    $serviceProjectRecordId = $utils->getNextId(constant('PROJECT_ID'));
     $utils->logIt (' curated_department is '.$curated_department);
     $data = array(
         'record_id' => $serviceProjectRecordId,
@@ -72,7 +94,7 @@ if ($serviceProjectRecordId === '0') {
         'requestor_email' => $requestorEmail,
         'requestor_affiliation' => $requestorAffiliation,
         'requestor_ou' => $requestorOu,
-        'area_of_inquiry' =>  $Primary_Category__c,
+        'area_of_inquiry' =>  $category,
         'inquiry_detail' => $inquiryDetail . ' ' . $availability,
         'redcap_pid' => $redcapPid,
         'project_summary_complete' => '2'
@@ -87,9 +109,9 @@ if ($serviceProjectRecordId === '0') {
 
     // look up the project context to fill in some of the blanks
     $utils->logIt('looks like we found a prior record:   '.print_r($serviceProjectRecordId, true));
-//    $_GET['pid'] = $service_metrics_pid;
+
     $query_filter = "[record_id] = '" . $serviceProjectRecordId . "'";
-    $records = REDCap::getData($service_metrics_pid, 'array', null , array('record_id', 'project_title'), null, null, false, false, false, $query_filter);
+    $records = REDCap::getData(constant('PROJECT_ID'), 'array', null , array('record_id', 'project_title'), null, null, false, false, false, $query_filter);
     foreach ($records as $k => $v) {
         foreach ($v as $v2 => $rec) {
             $projectTitle = $rec['project_title'];
@@ -102,7 +124,7 @@ if ($serviceProjectRecordId === '0') {
 // now set up an email for triggering a new case in Salesforce
 
 // look up metadata needed to convert codes to labels
-$dd_array = REDCap::getDataDictionary($service_metrics_pid, 'array', FALSE, array('funding','curated_department', 'pubplan','research','appointment','requestor_is_pi'));
+$dd_array = REDCap::getDataDictionary(constant('PROJECT_ID'), 'array', FALSE, array('funding','curated_department', 'pubplan','research','appointment','requestor_is_pi'));
 
 // cleanse the email field in case they tried to get fancy
 $pattern = '/[a-z0-9_\.\-\+]+@[a-z0-9\-]+\.([a-z]{2,3})(?:\.[a-z]{2})?/i'; //regex for pattern of e-mail address
@@ -170,9 +192,7 @@ if ( $newCase ) {
         "\nResearch?: " . $researchstr .
         (!isset($irb_number) || strlen($irb_number) == 0 ? '' : ', IRB: ' . $irb_number) .
         (!isset($pi) || strlen($pi) == 0 ? '' : ', PI: ' . $pi) .
-        "\nArea of inquiry: $Primary_Category__c $redcapURL" .
-        "\nPlans to publish: " . $pubplanstr .
-        "\nFunding: " . $fundingstr .
+        "\nArea of inquiry: $category $redcapURL" .
         "\nRequest submitted by: $requestorName <$requestorEmail> ($sunetid) [$requestorAffiliation - $requestorOu]\n";
 
     if (strcasecmp($contactEmail, $requestorEmail) == 0) {
@@ -215,7 +235,8 @@ if ( $newCase ) {
         'Original_Queue_Name__c' => $QueueName__c,
         'Active_Queue__c' => $QueueName__c,
         'CustomOrigin__c' => $CustomOrigin__c,
-        'Primary_Category__c' => $Primary_Category__c
+        'Primary_Category__c' => $category,
+        'QueueName__c' => $queue,
     ];
     $emailmessage = json_encode($contactObj) . "~#~#~" . json_encode((object)$caseAr);
     $utils->logIt($emailmessage);
