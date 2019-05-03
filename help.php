@@ -2,11 +2,13 @@
 /** @var \Stanford\SupportForm\SupportForm $module */
 
 
+use Stanford\SupportForm\GetHelpUtils;
+
 require_once ('src/GetHelpUtils.php');
 $utils = new Stanford\SupportForm\GetHelpUtils($module);
 
 // this is used to generate dropdown lists
-$dd_array = REDCap::getDataDictionary($p_id, 'array', FALSE, array('funding','curated_department','pubplan','research','hospital_affiliation','auspices','inquiry','appointment'));
+$dd_array = REDCap::getDataDictionary(constant('PROJECT_ID'), 'array', FALSE, array('curated_department','research','appointment'));
 
 $sunetid = $_SERVER['REMOTE_USER'];
 $prj_type = $_GET['prj_type'];
@@ -22,7 +24,7 @@ $ldapResult->givenname = ucwords($ldapResult->givenname);
 
 // and this is used to show the list of projects for this user
 $query_filter = "[webauth_user] = '" . $sunetid . "'";
-$rcdata = REDCap::getData($p_id, 'array', null, null, null, null, false, false, false, $query_filter);
+$rcdata = REDCap::getData(constant('PROJECT_ID'), 'array', null, null, null, null, false, false, false, $query_filter);
 $utils->logIt(   "\t PROJECT ID IS ".constant('PROJECT_ID').'...' .print_r( $rcdata,true) . "\n");
 $first_time_ever = sizeof($rcdata) == 0;
 
@@ -35,7 +37,7 @@ if ($first_time_ever) {
     $collapse_state = '';
 }
 ?>
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -122,10 +124,10 @@ if ($first_time_ever) {
                     <div class="panel-body">
                         <input type="hidden" id="brand" name="brand" value="researchit.png">
                         <input type="hidden" id="brandurl" name="brandurl" value="http://med.stanford.edu/researchit.html">
-                        <input type="hidden" id="QueueName__c" name="QueueName__c" >
+
                         <input type="hidden" id="salesforceEmail" name="salesforceEmail" value="smrcemailservice@5-2iq1bfdgo8az62c4gcjqrb2bnpx69mpfs3rdjuq8btrhpu5r34.2c-hduuuag.cs59.apex.sandbox.salesforce.com">
                         <input type="hidden" id="org" name="org" value="Research IT">
-                        <input type="hidden" id="CustomOrigin__c" name="CustomOrigin__c" value="RIT Form V1">
+                        <input type="hidden" id="CustomOrigin__c" name="CustomOrigin__c" value="Research-IT V1">
                         <!--span class="help-block">Please tell us about the project that you are working on.</span-->
                         <div class="col-md-6">
                             <div class="form-group input-group">
@@ -153,18 +155,16 @@ if ($first_time_ever) {
                                 <span class="input-group-addon" id="iAppt_label">Main Contact Affiliation</span>
                                 <select id="iAppt" name="iAppt" class="form-control" aria-describedby="iAppt_label" >
                                     <option value=""></option>
-                                    <option value="1">Stanford Medicine Faculty</option>
-                                    <option value="101">Stanford Medicine Faculty - MCL</option>
-                                    <option value="102">Stanford Medicine Faculty - UTL</option>
-                                    <option value="103">Stanford Medicine Faculty - CE</option>
-                                    <option value="104">Stanford Medicine Faculty - Other</option>
-                                    <option value="2">Stanford Medicine Staff</option>
-                                    <option value="3">Stanford Medicine Grad Student / Post-Doc</option>
-                                    <option value="4">Stanford Medicine MD Candidate</option>
-                                    <option value="5">SHC/SCH Clinical</option>
-                                    <option value="7">SHC/SCH Administrative</option>
-                                    <option value="10">Other Stanford Faculty/Staff/Student</option>
-                                    <option value="11">Not Affiliated with Stanford</option>
+                                    <?php
+                                    $enums = $utils->parseDDEnum($dd_array['appointment']['select_choices_or_calculations']);
+                                    $sufaculty = strpos($ldapResult->{'suaffiliation'}, 'faculty') !== FALSE;
+
+                                    foreach ($enums as $k => $v) {
+                                        if ($k == 1) continue;
+                                        $selected = ($sufaculty && strpos($v, 'Medicine Faculty') !== FALSE ? 'selected' : '');
+                                        print("            <option value='$k' $selected>$v</option>");
+                                    }
+                                    ?>
                                 </select>
                             </div>
 
@@ -175,54 +175,12 @@ if ($first_time_ever) {
                                 <label class="input-group-addon" id="curatedDepartment_label">Department</label>
                                 <select class="form-control" id="curatedDepartment"  name="curated_department" aria-describedby="curatedDepartment_label" >
                                     <option value=""></option>
-                                    <option value="1">Anesthesiology, Perioperative & Pain Medicine</option>
-                                    <option value="2">Biochemistry</option>
-                                    <option value="3">Bioengineering</option>
-                                    <option value="4">Biomedical Data Sciences</option>
-                                    <option value="5">Cancer Institute</option>
-                                    <option value="6">Cardiothoracic Surgery</option>
-                                    <option value="7">Chemical & Systems Biology</option>
-                                    <option value="8">Comparative Medicine</option>
-                                    <option value="10">Dermatology</option>
-                                    <option value="11">Developmental Biology</option>
-                                    <option value="12">Emergency Medicine</option>
-                                    <option value="13">Genetics</option>
-                                    <option value="14">Health Research & Policy</option>
-                                    <option value="151">Medicine - BMT</option>
-                                    <option value="152">Medicine - BMIR</option>
-                                    <option value="153">Medicine - Cardiovascular</option>
-                                    <option value="155">Medicine - Endocrinology</option>
-                                    <option value="156">Medicine - Gastroenterology & Hepatology</option>
-                                    <option value="157">Medicine - Hematology</option>
-                                    <option value="158">Medicine - Hospice & Palliative Medicine</option>
-                                    <option value="159">Medicine - Hospital Medicine</option>
-                                    <option value="160">Medicine - Immunology & Rheumatology</option>
-                                    <option value="161">Medicine - Infectious Disease</option>
-                                    <option value="162">Medicine - Nephrology</option>
-                                    <option value="163">Medicine - Oncology</option>
-                                    <option value="164">Medicine - Primary Care & PHS</option>
-                                    <option value="165">Medicine - Pulmonary & Critical Care</option>
-                                    <option value="166">Medicine - SPRC</option>
-                                    <option value="16">Microbiology & Immunology</option>
-                                    <option value="17">Molecular and Cellular Physiology</option>
-                                    <option value="18">Neurobiology</option>
-                                    <option value="19">Neurology</option>
-                                    <option value="20">Neurosurgery</option>
-                                    <option value="21">Obstetrics & Gynecology</option>
-                                    <option value="22">Ophthalmology</option>
-                                    <option value="23">Orthopaedic Surgery</option>
-                                    <option value="24">Otolaryngology</option>
-                                    <option value="25">Pathology</option>
-                                    <option value="26">Pediatrics</option>
-                                    <option value="27">Psychiatry & Behavioral Sciences</option>
-                                    <option value="28">Radiation Oncology</option>
-                                    <option value="29">Radiology</option>
-                                    <option value="30">Structural Biology</option>
-                                    <option value="31">Surgery</option>
-                                    <option value="32">Urology</option>
-                                    <option value="98">Other - Stanford Medicine (Academic)</option>
-                                    <option value="97">Other - Stanford Medicine (Clinical)</option>
-                                    <option value="99">Not Affiliated with Stanford Medicine</option>
+                                    <?php
+                                    $enums = $utils->parseDDEnum($dd_array['curated_department']['select_choices_or_calculations']);
+                                    foreach ($enums as $k => $v) {
+                                        print("            <option value='$k'>$v</option>");
+                                    }
+                                    ?>
                                 </select>
                             </div>
                         </div>
@@ -281,24 +239,22 @@ if ($first_time_ever) {
 
                 <div class="panel"  >
                     <div class="panel-heading">Today's Request</div>
-                        <div class="col-sm-12">
-                            <div class="form-group input-group">
+                    <div class="col-sm-12">
+                        <div class="form-group input-group">
 
-                                <!-- remove this next field if and when the project lookup feature is re-instated  -->
-                                <input id="newCase" name="serviceProjectRecordId" type="hidden" value="0"/>
-                                <!-- Hardcode the category selection to redcap -->
-                                <input id="Primary_Category__c" name="Primary_Category__c" type="hidden" value="REDCap"/>
+                            <!-- remove this next field if and when the project lookup feature is re-instated  -->
+                            <input id="newCase" name="serviceProjectRecordId" type="hidden" value="0"/>
 
-                                <input id="sunetid" name="sunetid" type="hidden" value="<?php print $sunetid ?>">
-                                <input id="requestorEmail" name="requestorEmail" type="hidden" value="<?php print $ldapResult->{'mail'} ?>">
-                                <input id="requestorName" name="requestorName" type="hidden" value="<?php print $ldapResult->{'displayname'} ?>">
-                                <input id="requestorPhone" name="requestorPhone" type="hidden" value="<?php print $ldapResult->{'telephonenumber'} ?>">
-                                <input id="requestorAffiliation" name="requestorAffiliation" type="hidden" value="<?php print $ldapResult->{'suaffiliation'} ?>">
-                                <input id="requestorOu" name="requestorOu" type="hidden" value="<?php print $ldapResult->{'ou'} ?>">
-                                <input id="department" name="department" type="hidden" value="<?php print $ldapResult->{'ou'} ?>">
+                            <input id="sunetid" name="sunetid" type="hidden" value="<?php print $sunetid ?>">
+                            <input id="requestorEmail" name="requestorEmail" type="hidden" value="<?php print $ldapResult->{'mail'} ?>">
+                            <input id="requestorName" name="requestorName" type="hidden" value="<?php print $ldapResult->{'displayname'} ?>">
+                            <input id="requestorPhone" name="requestorPhone" type="hidden" value="<?php print $ldapResult->{'telephonenumber'} ?>">
+                            <input id="requestorAffiliation" name="requestorAffiliation" type="hidden" value="<?php print $ldapResult->{'suaffiliation'} ?>">
+                            <input id="requestorOu" name="requestorOu" type="hidden" value="<?php print $ldapResult->{'ou'} ?>">
+                            <input id="department" name="department" type="hidden" value="<?php print $ldapResult->{'ou'} ?>">
 
-                            </div>
                         </div>
+                    </div>
                     <div class="panel-body">
                         <!-- Textarea -->
                         <div class="col-sm-12">
@@ -318,27 +274,27 @@ if ($first_time_ever) {
 
                         <div class="col-md-3 mb-3">
                             <div class="form-group custom-control custom-checkbox mb-3">
-                                <input type="checkbox" class="custom-control-input" id="proj-type-redcap" onclick="selectQueue()">
-                                <span class="custom-control-label" for="proj-type-redcap">REDCap</span>
+                                <input type="checkbox" class="custom-control-input" id="proj_type_redcap" name="proj_type_redcap" onclick="selectQueue()">
+                                <span class="custom-control-label" for="proj_type_redcap">REDCap</span>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group custom-control custom-checkbox mb-3">
-                                <input type="checkbox" class="custom-control-input" id="proj-type-choir" onclick="selectQueue()">
-                                <span class="custom-control-label" for="proj-type-choir">CHOIR</span>
+                                <input type="checkbox" class="custom-control-input" id="proj_type_choir" name="proj_type_choir" onclick="selectQueue()">
+                                <span class="custom-control-label" for="proj_type_choir">CHOIR</span>
                             </div>
                         </div>
                         <!--span class="help-block">Please tell us about the project that you are working on.</span-->
                         <div class="col-md-4">
                             <div class="form-group custom-control custom-checkbox mb-3">
-                                <input type="checkbox" class="custom-control-input" id="proj-type-stride" onclick="selectQueue()">
-                                <span class="custom-control-label" for="proj-type-stride">Cohort Discovery / Chart Review</span>
+                                <input type="checkbox" class="custom-control-input" id="proj_type_stride" name="proj_type_stride" onclick="selectQueue()">
+                                <span class="custom-control-label" for="proj_type_stride">Cohort Discovery / Chart Review</span>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group custom-control custom-checkbox mb-3">
-                                <input type="checkbox" class="custom-control-input" id="proj-type-other" onclick="selectQueue()">
-                                <span class="custom-control-label" for="proj-type-other">Other</span>
+                                <input type="checkbox" class="custom-control-input" id="proj_type_other" name="proj_type_other" onclick="selectQueue()">
+                                <span class="custom-control-label" for="proj_type_other">Other</span>
                             </div>
                         </div>
 
@@ -391,17 +347,17 @@ if ($first_time_ever) {
     function selectQueue() {
         $("#redcap_pid_block").addClass('hidden');
         $("#other_block").addClass('hidden');
-        if ($("#proj-type-redcap:checked").length > 0) {
+        if ($("#proj_type_redcap:checked").length > 0) {
             $("#redcap_pid_block").removeClass('hidden');
             $("#QueueName__c").val("queuename=REDCap Queue;shortname=REDCap Help;longname=REDCap Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/redcap-support.html;email=rit-support@stanford.edu");
         }
-        if ($("#proj-type-choir:checked").length > 0) {
+        if ($("#proj_type_choir:checked").length > 0) {
             $("#QueueName__c").val("queuename=Research IT Queue;shortname=RIT Help;longname=Research IT Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/choir-support.html;email=rit-support@stanford.edu");
         }
-        if ($("#proj-type-stride:checked").length > 0) {
+        if ($("#proj_type_stride:checked").length > 0) {
             $("#QueueName__c").val("queuename=Research IT Queue;shortname=RIT Help;longname=Research IT Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/stride-support.html;email=rit-support@stanford.edu");
         }
-        if ($("#proj-type-other:checked").length > 0) {
+        if ($("#proj_type_other:checked").length > 0) {
             $("#other_block").removeClass('hidden');
             $("#QueueName__c").val("queuename=Research IT Queue;shortname=RIT Help;longname=Research IT Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit-support.html;email=rit-support@stanford.edu");
         }
@@ -449,29 +405,29 @@ if ($first_time_ever) {
             $("#projectTitle").prop('required',false);
         }
     }
-<?php if ($prj_type) { ?>
+    <?php if ($prj_type) { ?>
     $("#rit_block").removeClass('hidden');
     $("#buttonbar").addClass('hidden');
     <?php if ($rc_inq) { ?>
-        $("#proj-type-redcap").prop('checked', true);
+    $("#proj_type_redcap").prop('checked', true);
     <?php } else { ?>
-        $("#proj-type-redcap").prop('checked', false);
+    $("#proj_type_redcap").prop('checked', false);
     <?php }  ?>
     <?php if ($choir_inq) { ?>
-        $("#proj-type-choir").prop('checked', true);
+    $("#proj_type_choir").prop('checked', true);
     <?php } else { ?>
-        $("#proj-type-choir").prop('checked', false);
+    $("#proj_type_choir").prop('checked', false);
     <?php }  ?>
     <?php if ($stride_inq) { ?>
-        $("#proj-type-stride").prop('checked', true);
+    $("#proj_type_stride").prop('checked', true);
     <?php } else { ?>
-        $("#proj-type-stride").prop('checked', false);
+    $("#proj_type_stride").prop('checked', false);
     <?php }  ?>
     selectQueue();
-<?php } else { ?>
+    <?php } else { ?>
     $("#rit_block").addClass('hidden');
     $("#buttonbar").removeClass('hidden');
-<?php }  ?>
+    <?php }  ?>
 
     $('#research').on('change', function() {
         if ($("#research").val() === '1') {
