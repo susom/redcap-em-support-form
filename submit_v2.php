@@ -38,7 +38,7 @@ if ($iAmPI === '1') {
 }
 $separator = '';
 $category = '';
-$QueueName__c = 'queuename=Research IT Queue;shortname=Research IT;longname=Research IT;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit-support.html;email=rit-support@stanford.edu';
+$QueueName__c = 'queuename=RIT Level 1;shortname=Research IT;longname=Research IT;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit-support.html;email=rit-support@stanford.edu';
 $queue = "Research IT";
 if (isset($proj_type_redcap) && $proj_type_redcap === 'on') {
     $utils->logIt('found redcap');
