@@ -38,12 +38,14 @@ if ($iAmPI === '1') {
 }
 $separator = '';
 $category = '';
-$queue = 'queuename=Research IT Queue;shortname=Research IT;longname=Research IT;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit-support.html;email=rit-support@stanford.edu';
+$QueueName__c = 'queuename=Research IT Queue;shortname=Research IT;longname=Research IT;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit-support.html;email=rit-support@stanford.edu';
+$queue = "Research IT";
 if (isset($proj_type_redcap) && $proj_type_redcap === 'on') {
     $utils->logIt('found redcap');
     $category .= $separator . 'REDCap';
     $separator = ', ';
-    $queue = 'queuename=REDCap Queue;shortname=REDCap Help;longname=REDCap Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/redcap-support.html;email=redcap-help@stanford.edu';
+    $queue = 'REDCap Queue';
+    $QueueName__c = 'queuename=REDCap Queue;shortname=REDCap Help;longname=REDCap Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/redcap-support.html;email=redcap-help@stanford.edu';
 }
 if (isset($proj_type_choir) && $proj_type_choir === 'on') {
     $utils->logIt('found choir');
