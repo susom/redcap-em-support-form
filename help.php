@@ -203,7 +203,7 @@ if ($first_time_ever) {
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group input-group hidden" id="areyouthepi_block">
-                                <label class="input-group-addon " id="iAmPI_label">Is the main contact also the PI / faculty sponsor?</label>
+                                <label class="input-group-addon " id="iAmPI_label">Is the main contact also the PI?</label>
                                 <select class="form-control" id="iAmPI"  name="iAmPI" aria-describedby="iAmPI_label" >
                                     <option value=""></option>
                                     <option value="1">Yes</option>
@@ -377,33 +377,33 @@ if ($first_time_ever) {
     }
 
     function checkRequired() {
-        n = $('#newproject:checked').length;
-
-        if (n > 0 ) {
+        // n = $('#newproject:checked').length;
+        // console.log(n);
+        // if (n > 0 ) {
 
             $("#contact").prop('required',true);
             $("#contactEmail").prop('required',true);
             $("#contactPhone").prop('required',true);
             $("#iAppt").prop('required',true);
             $("#curatedDepartment").prop('required',true);
-            $("#funding").prop('required',true);
-            $("#pubplan").prop('required',true);
+            // $("#funding").prop('required',true);
+            // $("#pubplan").prop('required',true);
             $("#research").prop('required',true);
             $("#description").prop('required',true);
             $("#projectTitle").prop('required',true);
-        } else {
-
-            $("#contact").prop('required',false);
-            $("#contactEmail").prop('required',false);
-            $("#contactPhone").prop('required',false);
-            $("#iAppt").prop('required',false);
-            $("#curatedDepartment").prop('required',false);
-            $("#funding").prop('required',false);
-            $("#pubplan").prop('required',false);
-            $("#research").prop('required',false);
-            $("#description").prop('required',false);
-            $("#projectTitle").prop('required',false);
-        }
+        // } else {
+        //
+        //     $("#contact").prop('required',false);
+        //     $("#contactEmail").prop('required',false);
+        //     $("#contactPhone").prop('required',false);
+        //     $("#iAppt").prop('required',false);
+        //     $("#curatedDepartment").prop('required',false);
+        //     $("#funding").prop('required',false);
+        //     $("#pubplan").prop('required',false);
+        //     $("#research").prop('required',false);
+        //     $("#description").prop('required',false);
+        //     $("#projectTitle").prop('required',false);
+        // }
     }
     <?php if ($prj_type) { ?>
     $("#rit_block").removeClass('hidden');
