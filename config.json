@@ -45,7 +45,8 @@
   },
 
   "no-auth-pages": [
-    "help"
+    "help",
+    "submit_v2"
   ],
 
   "system-settings": [
