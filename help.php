@@ -78,7 +78,7 @@ if ($first_time_ever) {
         <div class="my-brand-logo"></div>
     </div></a>
 <div id="background" class="background">
-    <form data-toggle="validator" role="form" method=POST action='<?php print $module->getUrl("submit_v2.php",false,true) ?>'>
+    <form data-toggle="validator" role="form" method=POST action='<?php print $module->getUrl("submit_v2.php",true,true) ?>'>
         <div class="container">
 
             <div class="panel" id="buttonbar">
