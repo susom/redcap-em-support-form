@@ -17,9 +17,9 @@ $choir_inq = $prj_type === 'choir';
 $stride_inq = $prj_type === 'stride';
 $utils->logIt('rc_inq '.$rc_inq);
 // Do LDAP Lookup
-$ldap = file_get_contents('http://med.stanford.edu/webtools-dev/stanford_ldap/ldap_lookup.php?token=pXJ5xNwj1P&exact=true&only=name,displayname,mail,department,suaffiliation,ou,telephonenumber&userid='. $sunetid);
+$ldap = file_get_contents('https://krb5-ldap-app-kbwg24yjgq-uw.a.run.app/webtools/redcap-ldap/redcap_validator_web_service.php?token=0dWhFQtgZN7VkCnDyzsoyZFoZGqKE4oALWMgs2K6JBkRZWS1dN&exact=true&only=displayname,sudisplaynamefirst,sudisplaynamelast,sudisplaynamelf,mail,telephonenumber,suaffiliation,sugwaffiliation1,ou,telephonenumber,suprimaryorganizationid,susunetid&username=' . $sunetid);
 $ldapResult = json_decode($ldap);
-$ldapResult->givenname = ucwords($ldapResult->givenname);
+$ldapResult->user_firstname = ucwords($ldapResult->user_firstname);
 //$utils->logIt(  "\t" . $ldap . "\n");
 
 // and this is used to show the list of projects for this user
@@ -123,37 +123,44 @@ if ($first_time_ever) {
                     <div class="panel-heading">Research Project Description</div>
                     <div class="panel-body">
                         <input type="hidden" id="brand" name="brand" value="researchit.png">
-                        <input type="hidden" id="brandurl" name="brandurl" value="http://med.stanford.edu/researchit.html">
+                        <input type="hidden" id="brandurl" name="brandurl"
+                               value="http://med.stanford.edu/researchit.html">
 
-                        <input type="hidden" id="salesforceEmail" name="salesforceEmail" value="rit-support@stanford.edu">
+                        <input type="hidden" id="salesforceEmail" name="salesforceEmail"
+                               value="rit-support@stanford.edu">
                         <input type="hidden" id="org" name="org" value="Research IT">
                         <input type="hidden" id="CustomOrigin__c" name="CustomOrigin__c" value="Research-IT V1">
                         <!--span class="help-block">Please tell us about the project that you are working on.</span-->
                         <div class="col-md-6">
                             <div class="form-group input-group">
                                 <span class='input-group-addon' id='contact_label'>Project Main Contact Name</span>
-                                <input id="contact" name="contact" class="form-control" aria-describedby="contact_label" value="<?php print $ldapResult->{'displayname'} ?>" >
+                                <input id="contact" name="contact" class="form-control" aria-describedby="contact_label"
+                                       value="<?php print $ldapResult->{'user_displayname'} ?>">
                             </div>
                         </div>
 
                         <div class="col-sm-6">
                             <div class="form-group input-group">
                                 <span class="input-group-addon" id="contactEmail_label">Main Contact E-mail</span>
-                                <input id="contactEmail" name="contactEmail" type="text" class="form-control" value="<?php print $ldapResult->{'mail'} ?>" aria-describedby="contactEmail_label" >
+                                <input id="contactEmail" name="contactEmail" type="text" class="form-control"
+                                       value="<?php print $ldapResult->{'user_email'} ?>"
+                                       aria-describedby="contactEmail_label">
                             </div>
                         </div>
 
                         <div class="col-sm-6">
                             <div class="form-group input-group">
                                 <span class="input-group-addon" id="phone_label">Main Contact Phone</span>
-                                <input id="contactPhone" name="contactPhone" type="text" class="form-control" value="<?php print $ldapResult->{'telephonenumber'} ?>" aria-describedby="phone_label" >
+                                <input id="contactPhone" name="contactPhone" type="text" class="form-control"
+                                       value="<?php print $ldapResult->{'user_telephonenumber'} ?>"
+                                       aria-describedby="phone_label">
                             </div>
                         </div>
 
                         <div class="col-sm-6">
                             <div class="form-group input-group">
                                 <span class="input-group-addon" id="iAppt_label">Main Contact Affiliation</span>
-                                <select id="iAppt" name="iAppt" class="form-control" aria-describedby="iAppt_label" >
+                                <select id="iAppt" name="iAppt" class="form-control" aria-describedby="iAppt_label">
                                     <option value=""></option>
                                     <?php
                                     $enums = $utils->parseDDEnum($dd_array['appointment']['select_choices_or_calculations']);
@@ -237,7 +244,7 @@ if ($first_time_ever) {
                     </div>
                 </div>
 
-                <div class="panel"  >
+                <div class="panel">
                     <div class="panel-heading">Today's Request</div>
                     <div class="col-sm-12">
                         <div class="form-group input-group">
@@ -246,12 +253,18 @@ if ($first_time_ever) {
                             <input id="newCase" name="serviceProjectRecordId" type="hidden" value="0"/>
 
                             <input id="sunetid" name="sunetid" type="hidden" value="<?php print $sunetid ?>">
-                            <input id="requestorEmail" name="requestorEmail" type="hidden" value="<?php print $ldapResult->{'mail'} ?>">
-                            <input id="requestorName" name="requestorName" type="hidden" value="<?php print $ldapResult->{'displayname'} ?>">
-                            <input id="requestorPhone" name="requestorPhone" type="hidden" value="<?php print $ldapResult->{'telephonenumber'} ?>">
-                            <input id="requestorAffiliation" name="requestorAffiliation" type="hidden" value="<?php print $ldapResult->{'suaffiliation'} ?>">
-                            <input id="requestorOu" name="requestorOu" type="hidden" value="<?php print $ldapResult->{'ou'} ?>">
-                            <input id="department" name="department" type="hidden" value="<?php print $ldapResult->{'ou'} ?>">
+                            <input id="requestorEmail" name="requestorEmail" type="hidden"
+                                   value="<?php print $ldapResult->{'user_email'} ?>">
+                            <input id="requestorName" name="requestorName" type="hidden"
+                                   value="<?php print $ldapResult->{'user_displayname'} ?>">
+                            <input id="requestorPhone" name="requestorPhone" type="hidden"
+                                   value="<?php print $ldapResult->{'user_telephonenumber'} ?>">
+                            <input id="requestorAffiliation" name="requestorAffiliation" type="hidden"
+                                   value="<?php print $ldapResult->{'user_suaffiliation'} ?>">
+                            <input id="requestorOu" name="requestorOu" type="hidden"
+                                   value="<?php print $ldapResult->{'ou'} ?>">
+                            <input id="department" name="department" type="hidden"
+                                   value="<?php print $ldapResult->{'ou'} ?>">
 
                         </div>
                     </div>
@@ -259,7 +272,7 @@ if ($first_time_ever) {
                         <!-- Textarea -->
                         <div class="col-sm-12">
                             <div class="form-group input-group">
-                                <label class="input-group-addon"  id="inquiryDetail_label">Problem description</label>
+                                <label class="input-group-addon" id="inquiryDetail_label">Problem description</label>
                                 <textarea rows="4" class="form-control" placeholder="What do you need from us today?" id="inquiryDetail" name="inquiryDetail" aria-describedby="inquiryDetail_label" ></textarea>
                             </div>
                         </div>
