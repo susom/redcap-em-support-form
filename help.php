@@ -16,7 +16,7 @@ $rc_inq = $prj_type === 'redcap';
 $choir_inq = $prj_type === 'choir';
 $stride_inq = $prj_type === 'stride';
 $utils->logIt('rc_inq '.$rc_inq);
-// Do LDAP Lookup
+// Do LDAP Lookup with new URL
 $ldap = file_get_contents('https://krb5-ldap-app-kbwg24yjgq-uw.a.run.app/webtools/redcap-ldap/redcap_validator_web_service.php?token=0dWhFQtgZN7VkCnDyzsoyZFoZGqKE4oALWMgs2K6JBkRZWS1dN&exact=true&only=displayname,sudisplaynamefirst,sudisplaynamelast,sudisplaynamelf,mail,telephonenumber,suaffiliation,sugwaffiliation1,ou,telephonenumber,suprimaryorganizationid,susunetid&username=' . $sunetid);
 $ldapResult = json_decode($ldap);
 $ldapResult->user_firstname = ucwords($ldapResult->user_firstname);
