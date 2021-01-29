@@ -282,7 +282,7 @@ if($send_contact){
 }
 else {
     $utils->logIt( "\tERROR Email send failure to $toAddr from $contactEmail:".$message.  "\n");
-    echo "<p>Sorry, there was a problem contacting the consulation services team. Please try again later.</p>";
+    echo "<p>Sorry, there was a problem contacting the consultation services team. Please try again later.</p>";
 }
 echo "</div></body></html>";
 $utils->logIt( "\tEmail from $contactEmail:".$message.  "\n");
