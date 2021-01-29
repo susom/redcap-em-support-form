@@ -3,7 +3,7 @@
 
   "namespace":"Stanford\\SupportForm",
 
-  "description": "A custom support form",
+  "description": "A custom support form, used by both Research IT and the RIC",
 
   "versions": [
     {
@@ -29,7 +29,8 @@
   ],
 
   "permissions": [
-    "redcap_every_page_top"
+    "redcap_every_page_top",
+    "redcap_survey_complete"
   ],
 
   "links": {
