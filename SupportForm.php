@@ -98,7 +98,7 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
         preg_match($pattern, $principal_email, $matches);
         $principal_email= $matches[0];
        
-        $redcapURL = "https://redcap.stanford.edu" . APP_PATH_WEBROOT . "index.php?pid=$project_id";
+        $redcapURL = "https://redcap.stanford.edu" . APP_PATH_WEBROOT . "index.php?pid=$project_id" . "&arm=1&id=" . $record;
        
 //$toAddr = 'scweber@stanford.edu';
         $toAddr = "ric-support@stanford.edu" ;
@@ -164,8 +164,9 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
             "\nArea of inquiry: $area_of_inquiry_1 $area_of_inquiry_2 $area_of_inquiry_3 $area_of_inquiry_4 $area_of_inquiry_5 " .
             "\nPlans to publish: " . $pubplanstr .
             "\nFunding: " . $fundingstr .
-            "\nRequest submitted by: $contact <$contactEmail> ($webauth_user) [$apptstr]\n\n" .
-            "\nRedcap URL $redcapURL";
+            "\nDICOM: " . ($radiology_or_dicom ? 'Yes, this is a Radiology/DICOM consult. See REDCap (URL below) for more information.' : '') .
+            "\nREDCap URL $redcapURL" .
+            "\nRequest submitted by: $contact <$contactEmail> ($webauth_user) [$apptstr]\n" ;
     
         $contactObj = (object)[
             'LastName' => $lastname,
