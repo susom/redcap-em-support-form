@@ -22,7 +22,7 @@ class GetHelpUtils
     }
 
     function getNextId($project_id) {
-        $records = REDCap::getData($project_id, 'array', null , array('record_id'));
+        $records = REDCap::getData($project_id, 'array', null , array(REDCap::getRecordIdField()));
         // $this->logIt('in getNextId with pid  '.$project_id.' and record_id_field '.REDCap::getRecordIdField().': '.print_r($records, true));
         $next_id = 1;
         foreach ($records as $k => $v) {
@@ -30,11 +30,9 @@ class GetHelpUtils
                 // $this->logIt('in getNextId loop: is_numeric(k) and k >= next_id. nextid was '.print_r($next_id, true));
                 $next_id = $k + 1;
                 // $this->logIt('and nextid is now '.print_r($next_id, true));
-            } else {
-                // $this->logIt('ERROR! ! ! in getNextId loop with non-numeric k ' . print_r($k, true));
             }
         }
-        $this->emDebug("Found next id: $next_id");
+        $this->module->emDebug("Found next id: $next_id");
         return $next_id ;
     }
 
