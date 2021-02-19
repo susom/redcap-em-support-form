@@ -24,8 +24,8 @@ $ldapResult->user_firstname = ucwords($ldapResult->user_firstname);
 
 // and this is used to show the list of projects for this user
 $query_filter = "[webauth_user] = '" . $sunetid . "'";
-$rcdata = REDCap::getData(constant('PROJECT_ID'), 'array', null, null, null, null, false, false, false, $query_filter);
-$utils->logIt(   "\t PROJECT ID IS ".constant('PROJECT_ID').'...' .print_r( $rcdata,true) . "\n");
+$rcdata = REDCap::getData(constant('PROJECT_ID'), 'array', null, array(REDCap::getRecordIdField()), null, null, false, false, false, $query_filter);
+// $utils->logIt(   "\t PROJECT ID IS ".constant('PROJECT_ID').'...' .print_r( $rcdata,true) . "\n");
 $first_time_ever = sizeof($rcdata) == 0;
 
 if ($first_time_ever) {

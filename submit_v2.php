@@ -102,6 +102,13 @@ if ($serviceProjectRecordId === '0') {
         'project_summary_complete' => '2'
     );
 
+	switch ($category) {
+		case "REDCap":
+			$data['area_of_inquiry___4'] = '1';
+			break;
+
+	}
+
     $data_json = json_encode(array($data));
     $utils->logIt('1 data_json is '. $data_json );
     $result = REDCap::saveData( 'json', $data_json, 'overwrite');
