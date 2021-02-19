@@ -249,12 +249,14 @@ if ( $newCase ) {
     ];
     $emailmessage = json_encode($contactObj) . "~#~#~" . json_encode((object)$caseAr);
     $utils->logIt($emailmessage);
-    $send_contact=mail( $toAddr, "base64_encoded", base64_encode($emailmessage), $headers );
+    $send_contact=\REDCap::email($toAddr,"rit-support@stanford.edu","base64_encoded",base64_encode($emailmessage));
+    // $send_contact=mail( $toAddr, "base64_encoded", base64_encode($emailmessage), $headers );
 } else {
     $subject = "Project_Record_ID__c=".$serviceProjectRecordId. "\n";
     $emailmessage =   $inquiryDetail . "\n" . $availability;
     $utils->logIt($emailmessage);
-    $send_contact=mail( $toAddr, $subject, $emailmessage, $headers );
+	$send_contact=\REDCap::email($toAddr,"rit-support@stanford.edu",$subject,$emailmessage);
+    // $send_contact=mail( $toAddr, $subject, $emailmessage, $headers );
 }
 
 echo "<html><head><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'><style>
