@@ -50,17 +50,16 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
     }
     
     function redcap_survey_complete ( int $project_id, string $record = NULL, string $instrument, int $event_id, int $group_id = NULL, string $survey_hash, int $response_id = NULL, int $repeat_instance = 1 ) {
-//        $this->emDebug("! In redcap_survey_complete: "  . print_r($record,TRUE));
-        if ($project_id != 22082) {
-            // only trigger this behavior for the RIC's 2021 intake form.
+
+        //  trigger this behavior for the RIC's 2021 intake form (22082) and Research IT (9132).
+        if ($project_id != 22082 && $project_id != 9132) {
             return;
         }
+        
         $query_filter='[record_id] = ' . $record;
         $rcdata = REDCap::getData($project_id, 'array', null, null, null, null, false, false, false, $query_filter);
-//        $this->emDebug("In redcap_survey_complete: "  . print_r($rcdata [$record][$event_id],TRUE));
+
         @extract( $rcdata [$record][$event_id]);
-//        $this->emDebug(print_r($rcdata [$record][$event_id], TRUE));
-//        $this->emDebug("is principal_name set? " . $principal_name . ' '. $principal_email);
         
         if (strchr($principal_name, ',') > 0) {
             $parts = explode(",", $principal_name);
@@ -71,27 +70,19 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
             $lastname = array_pop($parts);
             $firstname = implode(" ", $parts);
         }
-//        $this->emDebug('$irb_number is '. $irb_number);
+
         if (strlen($lastname) == 0) {
             $lastname=$principal_name;
         }
     
         if ($requestor_is_pi === '1') {
-//            $this->emDebug('success! setting pi '.$lastname . ', ' . $firstname);
             $pi = $lastname . ', ' . $firstname;
-        } else {
-            $this->emDebug('leaving pi as '.$pi);
-        }
-    
-//        $data_json = json_encode($rcdata [$record][$event_id]);
-//        $this->emDebug('1 data_json is '. $data_json );
-//        $result = REDCap::saveData($project_id, 'json', $data_json, 'overwrite');
-//        $this->emDebug('1 result is '.print_r($result, true));
+        } 
         
 // now set up an email for triggering a new case in Salesforce
 
 // look up metadata needed to convert codes to labels
-        $dd_array = REDCap::getDataDictionary($project_id, 'array', FALSE, array('area_of_inquiry','funding','curated_department', 'pubplan','research','appointment','requestor_is_pi'));
+        $dd_array = REDCap::getDataDictionary($project_id, 'array', FALSE, array('category','area_of_inquiry','funding','curated_department', 'pubplan','research','appointment','requestor_is_pi'));
 
 // cleanse the email field in case they tried to get fancy
         $pattern = '/[a-z0-9_\.\-\+]+@[a-z0-9\-]+\.([a-z]{2,3})(?:\.[a-z]{2})?/i'; //regex for pattern of e-mail address
@@ -101,40 +92,61 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
         $redcapURL = "https://redcap.stanford.edu" . APP_PATH_WEBROOT . "index.php?pid=$project_id" . "&arm=1&id=" . $record;
        
 //$toAddr = 'scweber@stanford.edu';
-        $toAddr = "ric-support@stanford.edu" ;
+        
         $contact = stripslashes($principal_name);
         $contactEmail = stripslashes($principal_email);
         $description = stripslashes($research_description);
         $availability = stripslashes($contact_info);
-        $inquirymeta = $this->parseDDEnum($dd_array['area_of_inquiry']['select_choices_or_calculations']);
-//        $this->emDebug('inquirymeta is ' . print_r($inquirymeta,TRUE));
-        $area_of_inquiry_1 = ( $area_of_inquiry[1] ? $inquirymeta[1] : "");
-        $area_of_inquiry_2 = ( $area_of_inquiry[2] ? $inquirymeta[2] : "");
-        $area_of_inquiry_3 = ( $area_of_inquiry[3] ? $inquirymeta[3] : "");
-        $area_of_inquiry_4 = ( $area_of_inquiry[4] ? $inquirymeta[4] : "");
-        $area_of_inquiry_5 = ( $area_of_inquiry[5] ? $inquirymeta[5] : "");
+        
+        // RIC formerly used area_of_inquiry , comment out for now in case they change their minds
+//         $inquirymeta = $this->parseDDEnum($dd_array['area_of_inquiry']['select_choices_or_calculations']);
+//         $area_of_inquiry_1 = ( $area_of_inquiry[1] ? $inquirymeta[1] : "");
+//         $area_of_inquiry_2 = ( $area_of_inquiry[2] ? $inquirymeta[2] : "");
+//         $area_of_inquiry_3 = ( $area_of_inquiry[3] ? $inquirymeta[3] : "");
+//         $area_of_inquiry_4 = ( $area_of_inquiry[4] ? $inquirymeta[4] : "");
+//         $area_of_inquiry_5 = ( $area_of_inquiry[5] ? $inquirymeta[5] : "");
+        // Research IT uses category
+        $categorymeta = $this->parseDDEnum($dd_array['area_of_inquiry']['select_choices_or_calculations']);
+        $category_1 = ( $category[1] ? $categorymeta[1] : "");
+        $category_2 = ( $category[2] ? $categorymeta[2] : "");
+        $category_3 = ( $category[3] ? $categorymeta[3] : "");
+        $category_99 = ( $category[99] ? $categorymeta[99] : "");
+        
         $apptmeta = $this->parseDDEnum($dd_array['appointment']['select_choices_or_calculations']);
         $apptstr = $apptmeta[$appointment];
         $researchmeta = $this->parseDDEnum($dd_array['research']['select_choices_or_calculations']);
         $researchstr = $researchmeta[$research];
         $iampimeta = $this->parseDDEnum($dd_array['requestor_is_pi']['select_choices_or_calculations']);
         $iampistr = $iampimeta[$requestor_is_pi];
+        
+        // used only by the RIC
         $pubplanmeta = $this->parseDDEnum($dd_array['pubplan']['select_choices_or_calculations']);
         $pubplanstr = $pubplanmeta[$pubplan];
-//        $this->emDebug('$pubplan is '.print_r($pubplan, true));
-//        $this->emDebug('$pubplanmeta is '.print_r($pubplanmeta, true));
-//        $this->emDebug('$pubplanstr is '.print_r($pubplanstr, true));
         if (!isset($pubplanstr)) {
             $pubplanstr = '';
         }
-//$this->emDebug('dd '.print_r($dd_array, true));
         $fundingmeta = $this->parseDDEnum($dd_array['funding']['select_choices_or_calculations']);
         $fundingstr = $fundingmeta[$funding];
         if (!isset($fundingstr) ) {
             $fundingstr = '';
         }
+        
         $curated_departmentmeta = $this->parseDDEnum($dd_array['curated_department']['select_choices_or_calculations']);
         $curated_departmentstr = $curated_departmentmeta[$curated_department];
+        
+        if ($project_id == 22082) {
+            $toAddr = "ric-support@stanford.edu" ;
+            $QueueName__c = "queuename=RICQueue;shortname=RIC;longname=Research Informatics Center;url=https://med.stanford.edu/ric.html;email=ric-support@stanford.edu;owneralias=RIC";
+
+        } else {
+            $toAddr = "rit-support@stanford.edu" ;
+            if (isset($category_1) || strlen($category_1) > 0) {
+                    $QueueName__c = 'queuename=REDCap Queue;shortname=REDCap Help;longname=REDCap Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/redcap-support.html;email=redcap-help@stanford.edu';
+            } else {
+                $QueueName__c = 'queuename=RIT Level 1;shortname=Research IT;longname=Research IT;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit-support.html;email=rit-support@stanford.edu';
+            }
+        }
+
 // To send HTML mail, the Content-type header must be set
         $headers = 'MIME-Version: 1.0' . "\n";
         $headers .= 'Content-type: text/plain; charset=utf-8' . "\n";
@@ -160,11 +172,18 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
             "\nResearch?: " . $researchstr .
             (!isset($irb_number) || strlen($irb_number) == 0 ? '' : ', IRB: ' . $irb_number) .
             (!isset($pi) || strlen($pi) == 0 ? '' : ', PI: ' . $pi) .
-            (!isset($sciMember) || strlen($sciMember) == 0 ? '' : ', SCI member: ' . $sci_member) .
-            "\nArea of inquiry: $area_of_inquiry_1 $area_of_inquiry_2 $area_of_inquiry_3 $area_of_inquiry_4 $area_of_inquiry_5 " .
+            (!isset($sciMember) || strlen($sciMember) == 0 ? '' : ', SCI member: ' . $sci_member) ;
+        if ($project_id == 22082) {
+            $message = $message .
+//             "\nArea of inquiry: $area_of_inquiry_1 $area_of_inquiry_2 $area_of_inquiry_3 $area_of_inquiry_4 $area_of_inquiry_5 " .
             "\nPlans to publish: " . $pubplanstr .
             "\nFunding: " . $fundingstr .
             "\nDICOM: " . ($radiology_or_dicom ? 'Yes, this is a Radiology/DICOM consult. See REDCap (URL below) for more information.' : '') .
+        } else {
+            $message = $message .
+            "\nArea of inquiry: $category_1 $category_2 $category_3 $category_99 " .
+        }
+        $message = $message .
             "\nREDCap URL $redcapURL" .
             "\nRequest submitted by: $contact <$contactEmail> ($webauth_user) [$apptstr]\n" ;
     
@@ -179,7 +198,7 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
             'Rank__c' => $apptstr,
             'Stanford_Dept__c' => $curated_departmentstr
         ];
-        $QueueName__c = "queuename=RICQueue;shortname=RIC;longname=Research Informatics Center;url=https://med.stanford.edu/ric.html;email=ric-support@stanford.edu;owneralias=RIC";
+
         $caseAr = [
             'SUnet_ID_case__c' => $webauth_user,
             'Subject' => $project_title,
@@ -198,8 +217,8 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
             'Publication_Plans__c' => $pubplanstr,
             'Original_Queue_Name__c' => $QueueName__c,
             'Active_Queue__c' => $QueueName__c,
-            'CustomOrigin__c' => "RIC Form V1",
-            'Primary_Category__c' => min($area_of_inquiry___1,$area_of_inquiry___2,$area_of_inquiry___3,$area_of_inquiry___4,$area_of_inquiry___5)
+            'CustomOrigin__c' => "RIC Form V1" //,
+//             'Primary_Category__c' => min($area_of_inquiry___1,$area_of_inquiry___2,$area_of_inquiry___3,$area_of_inquiry___4,$area_of_inquiry___5)
         ];
         if (isset($sci_member) && strlen($sci_member) > 0) {
             $caseAr['SCI_Sponsor__c'] = $sci_member;
@@ -207,7 +226,7 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
         }
         $emailmessage = json_encode($contactObj) . "~#~#~" . json_encode((object)$caseAr);
         $this->emDebug($emailmessage);
-        $send_contact = \REDCap::email($toAddr, "ric-support@stanford.edu", "base64_encoded", base64_encode($emailmessage));
+        $send_contact = \REDCap::email($toAddr, $toAddr, "base64_encoded", base64_encode($emailmessage));
         // $send_contact=mail( $toAddr, "base64_encoded", base64_encode($emailmessage), $headers );
         $this->emDebug( "\tEmail to $send_contact from $contactEmail: ".$message.  "\n");
         
