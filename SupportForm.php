@@ -207,7 +207,7 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
         }
         $emailmessage = json_encode($contactObj) . "~#~#~" . json_encode((object)$caseAr);
         $this->emDebug($emailmessage);
-        $send_contact = \REDCap::email($toAddr, "rit-support@stanford.edu", "base64_encoded", base65_encode($emailmessage));
+        $send_contact = \REDCap::email($toAddr, "ric-support@stanford.edu", "base64_encoded", base64_encode($emailmessage));
         // $send_contact=mail( $toAddr, "base64_encoded", base64_encode($emailmessage), $headers );
         $this->emDebug( "\tEmail to $send_contact from $contactEmail: ".$message.  "\n");
         
