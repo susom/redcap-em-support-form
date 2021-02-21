@@ -50,12 +50,8 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
     }
     
     function redcap_survey_complete ( int $project_id, string $record = NULL, string $instrument, int $event_id, int $group_id = NULL, string $survey_hash, int $response_id = NULL, int $repeat_instance = 1 ) {
-
         //  trigger this behavior for the RIC's 2021 intake form (22082) and Research IT (9132).
-        if ($project_id != 22082 && $project_id != 9132) {
-            return;
-        }
-        
+    
         $query_filter='[record_id] = ' . $record;
         $rcdata = REDCap::getData($project_id, 'array', null, null, null, null, false, false, false, $query_filter);
 
@@ -178,10 +174,10 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
 //             "\nArea of inquiry: $area_of_inquiry_1 $area_of_inquiry_2 $area_of_inquiry_3 $area_of_inquiry_4 $area_of_inquiry_5 " .
             "\nPlans to publish: " . $pubplanstr .
             "\nFunding: " . $fundingstr .
-            "\nDICOM: " . ($radiology_or_dicom ? 'Yes, this is a Radiology/DICOM consult. See REDCap (URL below) for more information.' : '') .
+            "\nDICOM: " . ($radiology_or_dicom ? 'Yes, this is a Radiology/DICOM consult. See REDCap (URL below) for more information.' : '') ;
         } else {
             $message = $message .
-            "\nArea of inquiry: $category_1 $category_2 $category_3 $category_99 " .
+            "\nArea of inquiry: $category_1 $category_2 $category_3 $category_99 " ;
         }
         $message = $message .
             "\nREDCap URL $redcapURL" .
