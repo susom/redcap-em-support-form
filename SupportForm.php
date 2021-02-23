@@ -142,17 +142,11 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
                 $QueueName__c = 'queuename=RIT Level 1;shortname=Research IT;longname=Research IT;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit-support.html;email=rit-support@stanford.edu';
             }
         }
-
-// To send HTML mail, the Content-type header must be set
-        $headers = 'MIME-Version: 1.0' . "\n";
-        $headers .= 'Content-type: text/plain; charset=utf-8' . "\n";
-// Additional headers as http://php.net/manual/en/function.mail.php
-
-// now re-instate their name, as the Salesforce logic parses it for the auto-generated response
-        $fromAddr = "\"$contact\" <$contactEmail>";
-    
-        $headers .= "From: $fromAddr" . "\n";
-        $headers .= "Reply-To: $fromAddr" . "\n";
+        
+        // now re-instate their name, as the Salesforce logic parses it for the auto-generated response
+        $name_component = $contact ?:  $webauth_user;
+        $fromAddr = "\"$name_component\" <$contactEmail>";
+        $this->emDebug("FromAddr :" . $fromAddr);
         $datetimenow = new DateTime();
         $datestring = $datetimenow->format('M j, Y');
         $timestring = $datetimenow->format('g:i A');
