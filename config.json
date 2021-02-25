@@ -30,7 +30,8 @@
 
   "permissions": [
     "redcap_every_page_top",
-    "redcap_survey_complete"
+    "redcap_survey_complete",
+    "redcap_save_record"
   ],
 
   "links": {

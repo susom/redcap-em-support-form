@@ -49,7 +49,7 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
         $this->project = $project;
     }
     
-    function redcap_survey_complete ( int $project_id, string $record = NULL, string $instrument, int $event_id, int $group_id = NULL, string $survey_hash, int $response_id = NULL, int $repeat_instance = 1 ) {
+    function redcap_save_record ( int $project_id, string $record = NULL, string $instrument, int $event_id, int $group_id = NULL, string $survey_hash, int $response_id = NULL, int $repeat_instance = 1 ) {
         //  trigger this behavior for the RIC's 2021 intake form (22082) and Research IT (9132).
     
         $query_filter='[record_id] = ' . $record;
