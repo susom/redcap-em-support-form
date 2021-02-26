@@ -145,8 +145,10 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
         
         // now re-instate their name, as the Salesforce logic parses it for the auto-generated response
         $name_component = $contact ?:  $webauth_user;
-        $fromAddr = "\"$name_component\" <$contactEmail>";
-        $this->emDebug("FromAddr :" . $fromAddr);
+	    // $fromAddr = "\"$name_component\" <$contactEmail>";
+	    $fromAddr = $contactEmail;
+	    $fromName = $name_component;
+	    // $this->emDebug("FromAddr :" . $fromAddr);
         $datetimenow = new DateTime();
         $datestring = $datetimenow->format('M j, Y');
         $timestring = $datetimenow->format('g:i A');
@@ -216,7 +218,7 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
         }
         $emailmessage = json_encode($contactObj) . "~#~#~" . json_encode((object)$caseAr);
         $this->emDebug($emailmessage);
-		$this->emDebug("Test Email", \REDCap::email("rval@stanford.edu", "RVAL@stanford.edu","Subject", "Message"));
+		// $this->emDebug("Test Email", \REDCap::email("rval@stanford.edu", "RVAL@stanford.edu","Subject", "Message"));
         $send_contact = \REDCap::email($toAddr, $fromAddr, "base64_encoded", base64_encode($emailmessage), "","rval@stanford.edu");
         // $send_contact=mail( $toAddr, "base64_encoded", base64_encode($emailmessage), $headers );
         $this->emDebug( "Email to $toAddr from $fromAddr regarding " . $message, $send_contact);
