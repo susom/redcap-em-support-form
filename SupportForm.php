@@ -219,10 +219,14 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
         $emailmessage = json_encode($contactObj) . "~#~#~" . json_encode((object)$caseAr);
         $this->emDebug($emailmessage);
 		// $this->emDebug("Test Email", \REDCap::email("rval@stanford.edu", "RVAL@stanford.edu","Subject", "Message"));
-        $send_contact = \REDCap::email($toAddr, $fromAddr, "base64_encoded", base64_encode($emailmessage), "","rval@stanford.edu");
+        $send_contact = \REDCap::email($toAddr, $fromAddr, "base64_encoded", base64_encode($emailmessage));
         // $send_contact=mail( $toAddr, "base64_encoded", base64_encode($emailmessage), $headers );
-        $this->emDebug( "Email to $toAddr from $fromAddr regarding " . $message, $send_contact);
-        
+
+	    if (!$send_contact) {
+	    	// email failed - email Ryan
+		    \REDCap::email("rval@stanford.edu","support-form@no-reply.com", "Failed Support Email", "From: $fromAddr with $emailmessage");
+	    }
+        $this->emDebug( "Email to $toAddr from $fromAddr regarding:\n\n" . $emailmessage, $send_contact);
     }
     
 }
