@@ -130,13 +130,19 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
         $curated_departmentmeta = $this->parseDDEnum($dd_array['curated_department']['select_choices_or_calculations']);
         $curated_departmentstr = $curated_departmentmeta[$curated_department];
         
-        if ($project_id == 22082) {
-            $toAddr = "ric-support@stanford.edu" ;
-            $QueueName__c = "queuename=RICQueue;shortname=RIC;longname=Research Informatics Center;url=https://med.stanford.edu/ric.html;email=ric-support@stanford.edu;owneralias=RIC";
-
+        if ($project_id == 22082 ) {
+            $origin = "RIC Intake Form (PID 22082)";
+            if ($data_types[1]) {
+                $toAddr = "ric-support@stanford.edu";
+                $QueueName__c = "queuename=RICQueue;shortname=RIC;longname=Research Informatics Center;url=https://med.stanford.edu/ric.html;email=ric-support@stanford.edu;owneralias=RIC";
+            } else {
+                $toAddr = "rit-support@stanford.edu" ;
+                $QueueName__c = 'queuename=RIT Level 1;shortname=Research IT;longname=Research IT;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit-support.html;email=rit-support@stanford.edu';
+            }
         } else {
+            $origin = "Research IT Intake Form (PID 9132)";
             $toAddr = "rit-support@stanford.edu" ;
-            if (isset($category_1) || strlen($category_1) > 0) {
+            if ($category[1]) {
                     $QueueName__c = 'queuename=REDCap Queue;shortname=REDCap Help;longname=REDCap Support;url=http://redcap.stanford.edu/redcap/plugins/gethelp/redcap-support.html;email=redcap-help@stanford.edu';
             } else {
                 $QueueName__c = 'queuename=RIT Level 1;shortname=Research IT;longname=Research IT;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit-support.html;email=rit-support@stanford.edu';
@@ -209,7 +215,7 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
             'Publication_Plans__c' => $pubplanstr,
             'Original_Queue_Name__c' => $QueueName__c,
             'Active_Queue__c' => $QueueName__c,
-            'CustomOrigin__c' => "RIC Form V1" //,
+            'CustomOrigin__c' => $origin //,
 //             'Primary_Category__c' => min($area_of_inquiry___1,$area_of_inquiry___2,$area_of_inquiry___3,$area_of_inquiry___4,$area_of_inquiry___5)
         ];
         if (isset($sci_member) && strlen($sci_member) > 0) {
