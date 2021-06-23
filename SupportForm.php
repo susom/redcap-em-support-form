@@ -132,12 +132,12 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
         
         if ($project_id == 22082 ) {
             $origin = "RIC Intake Form (PID 22082)";
-            if ($data_types[1] || $data_types[3]) {
-                $toAddr = "ric-support@stanford.edu";
-                $QueueName__c = "queuename=RICQueue;shortname=RIC;longname=Research Informatics Center;url=https://med.stanford.edu/ric.html;email=ric-support@stanford.edu;owneralias=RIC";
-            } else {
+            if ($data_types[4] || $data_types[5] || $data_types[6] || $data_types[7] || $data_types[99]) {
                 $toAddr = "rit-support@stanford.edu" ;
                 $QueueName__c = 'queuename=RIT Level 1;shortname=Research IT;longname=Research IT;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit-support.html;email=rit-support@stanford.edu';
+            } else {
+                $toAddr = "ric-support@stanford.edu";
+                $QueueName__c = "queuename=RICQueue;shortname=RIC;longname=Research Informatics Center;url=https://med.stanford.edu/ric.html;email=ric-support@stanford.edu;owneralias=RIC";
             }
         } else {
             $origin = "Research IT Intake Form (PID 9132)";
