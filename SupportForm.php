@@ -132,7 +132,7 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
         
         if ($project_id == 22082 ) {
             $origin = "RIC Intake Form (PID 22082)";
-            if ($data_types[1]) {
+            if ($data_types[1] || $data_types[3]) {
                 $toAddr = "ric-support@stanford.edu";
                 $QueueName__c = "queuename=RICQueue;shortname=RIC;longname=Research Informatics Center;url=https://med.stanford.edu/ric.html;email=ric-support@stanford.edu;owneralias=RIC";
             } else {
@@ -176,7 +176,7 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
 //             "\nArea of inquiry: $area_of_inquiry_1 $area_of_inquiry_2 $area_of_inquiry_3 $area_of_inquiry_4 $area_of_inquiry_5 " .
             "\nPlans to publish: " . $pubplanstr .
             "\nFunding: " . $fundingstr .
-            "\nDICOM: " . ($radiology_or_dicom ? 'Yes, this is a Radiology/DICOM consult. See REDCap (URL below) for more information.' : '') ;
+            "\nDICOM: " . ($data_types[3] ? 'Yes, this is a Radiology/DICOM consult. See REDCap (URL below) for more information.' : '') ;
         } else {
             $message = $message .
             "\nArea of inquiry: $category_1 $category_2 $category_3 $category_99 " ;
@@ -213,6 +213,7 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
             'Project_Department__c' => $curated_departmentstr,
             'REDCap_StudyName__c' => $redcapURL,
             'Publication_Plans__c' => $pubplanstr,
+            'DICOM__c' => ($data_types[3] ? 'true' :' false'),
             'Original_Queue_Name__c' => $QueueName__c,
             'Active_Queue__c' => $QueueName__c,
             'CustomOrigin__c' => $origin //,
