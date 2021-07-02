@@ -85,7 +85,7 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
         preg_match($pattern, $principal_email, $matches);
         $principal_email= $matches[0];
        
-        $redcapURL = "https://redcap.stanford.edu" . APP_PATH_WEBROOT . "index.php?pid=$project_id" . "&arm=1&id=" . $record;
+        $redcapURL = "https://redcap.stanford.edu" . APP_PATH_WEBROOT . "DataEntry/record_home.php?pid=$project_id" . "&arm=1&id=" . $record;
        
 //$toAddr = 'scweber@stanford.edu';
         
@@ -129,15 +129,20 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
         
         $curated_departmentmeta = $this->parseDDEnum($dd_array['curated_department']['select_choices_or_calculations']);
         $curated_departmentstr = $curated_departmentmeta[$curated_department];
-        
+        $sharedConsult = false;
         if ($project_id == 22082 ) {
             $origin = "RIC Intake Form (PID 22082)";
-            if ($data_types[4] || $data_types[5] || $data_types[6] || $data_types[7] || $data_types[99]) {
+            // only route to Research IT if the EMR checkbox , data_types[1], is NOT checked
+            if (! $data_types[1] && ($data_types[4] || $data_types[5] || $data_types[6] || $data_types[7] || $data_types[99])) {
                 $toAddr = "rit-support@stanford.edu" ;
                 $QueueName__c = 'queuename=RIT Level 1;shortname=Research IT;longname=Research IT;url=http://redcap.stanford.edu/redcap/plugins/gethelp/rit-support.html;email=rit-support@stanford.edu';
             } else {
                 $toAddr = "ric-support@stanford.edu";
                 $QueueName__c = "queuename=RICQueue;shortname=RIC;longname=Research Informatics Center;url=https://med.stanford.edu/ric.html;email=ric-support@stanford.edu;owneralias=RIC";
+            }
+            // now set the shared consult checkbox
+            if ($data_types[1] && ($data_types[4] || $data_types[5] || $data_types[6] || $data_types[7] || $data_types[99])) {
+                $sharedConsult = true;
             }
         } else {
             $origin = "Research IT Intake Form (PID 9132)";
@@ -176,7 +181,8 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
 //             "\nArea of inquiry: $area_of_inquiry_1 $area_of_inquiry_2 $area_of_inquiry_3 $area_of_inquiry_4 $area_of_inquiry_5 " .
             "\nPlans to publish: " . $pubplanstr .
             "\nFunding: " . $fundingstr .
-            "\nDICOM: " . ($data_types[3] ? 'Yes, this is a Radiology/DICOM consult. See REDCap (URL below) for more information.' : '') ;
+            ($sharedConsult ? '\nShared: This is a shared consult. Both RIC and Research IT are involved.' : '').
+            ($data_types[3] ? '\nDICOM: This is a Radiology/DICOM consult. See REDCap (URL below) for more information.' : '') ;
         } else {
             $message = $message .
             "\nArea of inquiry: $category_1 $category_2 $category_3 $category_99 " ;
@@ -216,6 +222,7 @@ class SupportForm extends \ExternalModules\AbstractExternalModule
             'DICOM__c' => ($data_types[3] ? 'true' :' false'),
             'Original_Queue_Name__c' => $QueueName__c,
             'Active_Queue__c' => $QueueName__c,
+            'Shared_consult__c' => $sharedConsult,
             'CustomOrigin__c' => $origin //,
 //             'Primary_Category__c' => min($area_of_inquiry___1,$area_of_inquiry___2,$area_of_inquiry___3,$area_of_inquiry___4,$area_of_inquiry___5)
         ];
