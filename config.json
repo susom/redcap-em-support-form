@@ -4,7 +4,7 @@
   "namespace":"Stanford\\SupportForm",
 
   "description": "A custom support form, used by both Research IT and the RIC",
-
+  "framework-version": 16,
   "versions": [
     {
       "0.1": "Initial Development Version on EMs"
@@ -17,13 +17,8 @@
 
   "authors": [
     {
-      "name": "Andy Martin",
-      "email": "andy123@stanford.edu",
-      "institution": "Stanford University"
-    },
-    {
-      "name": "Susan Weber",
-      "email": "scweber@stanford.edu",
+      "name": "Ihab Zeedia",
+      "email": "ihabz@stanford.edu",
       "institution": "Stanford University"
     }
   ],
@@ -52,6 +47,12 @@
   ],
 
   "system-settings": [
+    {
+      "key": "krb5-api-token",
+      "name": "<b>KRB5 Plugin API Token</b>",
+      "required": true,
+      "type": "text"
+    },
     {
       "key": "enable-system-debug-logging",
       "name": "<b>Enable Debug Logging (system-wide)</b>",
